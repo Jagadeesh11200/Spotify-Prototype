@@ -1,0 +1,164 @@
+name: Deploy Android MVP
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-upload-deploy:
+    name: Build APK, upload to Appetize, deploy portal
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK packages
+        run: |
+          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.1.0"
+
+      - name: Create debug signing key
+        run: |
+          if [ ! -f debug.keystore ]; then
+            keytool -genkeypair \
+              -v \
+              -keystore debug.keystore \
+              -storepass android \
+              -alias androiddebugkey \
+              -keypass android \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US"
+          fi
+
+      - name: Build and test debug APK
+        run: |
+          chmod +x ./gradlew
+          ./gradlew testDebugUnitTest assembleDebug --stacktrace
+
+      - name: Save APK as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: spotify-mood-mvp-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+      - name: Upload APK to Appetize
+        env:
+          APPETIZE_API_TOKEN: ${{ secrets.APPETIZE_API_TOKEN }}
+          APPETIZE_PUBLIC_KEY: ${{ secrets.APPETIZE_PUBLIC_KEY }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${APPETIZE_API_TOKEN}" ]; then
+            echo "::error::Missing APPETIZE_API_TOKEN GitHub secret."
+            exit 1
+          fi
+
+          if [ -z "${APPETIZE_PUBLIC_KEY}" ]; then
+            echo "::error::Missing APPETIZE_PUBLIC_KEY GitHub secret. Create the Appetize app once, then save its public key as this secret."
+            exit 1
+          fi
+
+          APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
+
+          curl --fail-with-body --show-error --silent \
+            -X POST "https://api.appetize.io/v1/apps/${APPETIZE_PUBLIC_KEY}" \
+            -H "X-API-KEY: ${APPETIZE_API_TOKEN}" \
+            -F "file=@${APK_PATH}" \
+            -F "platform=android" \
+            -F "note=GitHub Actions build ${GITHUB_SHA}" \
+            -o appetize-response.json
+
+      - name: Generate evaluator portal config
+        env:
+          APPETIZE_PUBLIC_KEY: ${{ secrets.APPETIZE_PUBLIC_KEY }}
+          APPETIZE_APP_URL: ${{ secrets.APPETIZE_APP_URL }}
+        run: |
+          node <<'NODE'
+          const fs = require("fs");
+
+          const publicKey = process.env.APPETIZE_PUBLIC_KEY;
+          const explicitAppUrl = process.env.APPETIZE_APP_URL;
+          const repositoryUrl = `https://github.com/${process.env.GITHUB_REPOSITORY}`;
+          const appUrl = explicitAppUrl || `https://appetize.io/app/${publicKey}`;
+          const responsePath = "appetize-response.json";
+
+          let response = {};
+          if (fs.existsSync(responsePath)) {
+            try {
+              response = JSON.parse(fs.readFileSync(responsePath, "utf8"));
+            } catch (error) {
+              console.warn(`Could not parse ${responsePath}: ${error.message}`);
+            }
+          }
+
+          const buildId =
+            response.buildId ||
+            response.id ||
+            response.build?.id ||
+            response.build?.buildId ||
+            response.data?.buildId ||
+            response.data?.id;
+
+          const config = {
+            appetizeUrl: appUrl,
+            appetizeEmbedUrl: buildId ? `https://appetize.io/embed/${buildId}` : appUrl,
+            repositoryUrl,
+            buildSha: process.env.GITHUB_SHA,
+            generatedAt: new Date().toISOString()
+          };
+
+          fs.writeFileSync(
+            "deploy/evaluator-portal/app-config.js",
+            `window.SPOTIFY_MOOD_MVP_CONFIG = ${JSON.stringify(config, null, 2)};\n`
+          );
+          NODE
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Deploy evaluator portal to Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${VERCEL_TOKEN}" ]; then
+            echo "::error::Missing VERCEL_TOKEN GitHub secret."
+            exit 1
+          fi
+
+          if [ -z "${VERCEL_ORG_ID}" ]; then
+            echo "::error::Missing VERCEL_ORG_ID GitHub secret."
+            exit 1
+          fi
+
+          if [ -z "${VERCEL_PROJECT_ID}" ]; then
+            echo "::error::Missing VERCEL_PROJECT_ID GitHub secret."
+            exit 1
+          fi
+
+          npm install --global vercel@latest
+          mkdir -p deploy/evaluator-portal/.vercel
+          printf '{"orgId":"%s","projectId":"%s"}' "${VERCEL_ORG_ID}" "${VERCEL_PROJECT_ID}" > deploy/evaluator-portal/.vercel/project.json
+          vercel deploy deploy/evaluator-portal --prod --yes --token "${VERCEL_TOKEN}"
