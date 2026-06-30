@@ -6,12 +6,15 @@ The stable portal includes:
 
 ```text
 index.html
-user-flow.html
-ai-architecture.html
+evaluator-guide.html
+system-design.html
 ```
 
-`user-flow.html` gives evaluators a phase-by-phase test script. `ai-architecture.html` explains how the AI-native
+`evaluator-guide.html` gives evaluators a phase-by-phase test script. `system-design.html` explains how the AI-native
 review analysis and discovery backend maps to the MVP.
+
+The portal intentionally opens Appetize in a new tab instead of embedding it in an iframe. Appetize can refuse iframe
+loading on Vercel depending on app/share settings, so the reliable evaluator path is the `Open Mobile Session` button.
 
 ## Local/manual setup
 
@@ -36,7 +39,6 @@ Optional GitHub secret:
 
 ```text
 APPETIZE_APP_URL
-APPETIZE_EMBED_URL
 APPETIZE_DEVICE
 APPETIZE_OS_VERSION
 ```
@@ -46,16 +48,6 @@ Use `APPETIZE_APP_URL` only if the public Appetize link you want evaluators to o
 ```text
 https://appetize.io/app/{APPETIZE_PUBLIC_KEY}
 ```
-
-Use `APPETIZE_EMBED_URL` only if Appetize gives you a specific iframe URL. The embedded preview must use the Appetize
-embed route:
-
-```text
-https://appetize.io/embed/{BuildId-or-PublicKey}
-```
-
-Do not put the normal `https://appetize.io/app/...` share link inside the iframe; Appetize may refuse to render that
-page inside Vercel.
 
 The default evaluator device is:
 

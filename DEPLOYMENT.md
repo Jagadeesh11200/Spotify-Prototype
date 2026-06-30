@@ -16,7 +16,7 @@ flowchart LR
   Repo["GitHub repo"] --> Build["Gradle build: ./gradlew assembleDebug"]
   Build --> Apk["app-debug.apk"]
   Apk --> Appetize["Hosted Android emulator (Appetize)"]
-  Appetize --> PublicUrl["Public app session URL / iframe"]
+  Appetize --> PublicUrl["Public app session URL"]
   PublicUrl --> Portal["Optional Vercel or Render evaluator portal"]
   Portal --> Evaluator["Evaluator opens URL in browser"]
 ```
@@ -139,7 +139,6 @@ Optional GitHub secret:
 
 ```text
 APPETIZE_APP_URL
-APPETIZE_EMBED_URL
 APPETIZE_DEVICE
 APPETIZE_OS_VERSION
 ```
@@ -150,16 +149,8 @@ Use `APPETIZE_APP_URL` only if your Appetize public evaluator URL differs from:
 https://appetize.io/app/{APPETIZE_PUBLIC_KEY}
 ```
 
-Use `APPETIZE_EMBED_URL` only if Appetize provides a dedicated iframe URL. The normal share link and the iframe link are
-not the same:
-
-```text
-Open in new tab: https://appetize.io/app/{APPETIZE_PUBLIC_KEY}
-Embed in portal: https://appetize.io/embed/{BuildId-or-PublicKey}
-```
-
-If the portal iframe shows `appetize.io refused to connect`, it usually means the iframe is using the normal `/app/...`
-share URL instead of the `/embed/...` URL.
+The current evaluator portal intentionally opens Appetize in a new tab because Appetize can refuse iframe loading on
+Vercel depending on app/share settings. This avoids showing a broken embedded emulator to evaluators.
 
 The workflow also pins the evaluator device to match the intended mobile experience:
 
@@ -171,7 +162,7 @@ URL value: 16.0
 Orientation: portrait
 ```
 
-These values are appended to both the Appetize open link and iframe link. Override them only if needed with:
+These values are appended to the Appetize open link. Override them only if needed with:
 
 ```text
 APPETIZE_DEVICE

@@ -89,7 +89,6 @@ jobs:
         env:
           APPETIZE_PUBLIC_KEY: ${{ secrets.APPETIZE_PUBLIC_KEY }}
           APPETIZE_APP_URL: ${{ secrets.APPETIZE_APP_URL }}
-          APPETIZE_EMBED_URL: ${{ secrets.APPETIZE_EMBED_URL }}
           APPETIZE_DEVICE: ${{ secrets.APPETIZE_DEVICE }}
           APPETIZE_OS_VERSION: ${{ secrets.APPETIZE_OS_VERSION }}
         run: |
@@ -98,50 +97,22 @@ jobs:
 
           const publicKey = process.env.APPETIZE_PUBLIC_KEY;
           const explicitAppUrl = process.env.APPETIZE_APP_URL;
-          const explicitEmbedUrl = process.env.APPETIZE_EMBED_URL;
           const device = process.env.APPETIZE_DEVICE || "pixel9pro";
           const osVersion = process.env.APPETIZE_OS_VERSION || "16.0";
           const repositoryUrl = `https://github.com/${process.env.GITHUB_REPOSITORY}`;
-          const responsePath = "appetize-response.json";
 
           function withDeviceConfig(rawUrl) {
             const url = new URL(rawUrl);
-            if (!url.searchParams.has("device")) {
-              url.searchParams.set("device", device);
-            }
-            if (!url.searchParams.has("osVersion")) {
-              url.searchParams.set("osVersion", osVersion);
-            }
-            if (!url.searchParams.has("orientation")) {
-              url.searchParams.set("orientation", "portrait");
-            }
+            url.searchParams.set("device", device);
+            url.searchParams.set("osVersion", osVersion);
+            url.searchParams.set("orientation", "portrait");
             return url.toString();
           }
 
-          let response = {};
-          if (fs.existsSync(responsePath)) {
-            try {
-              response = JSON.parse(fs.readFileSync(responsePath, "utf8"));
-            } catch (error) {
-              console.warn(`Could not parse ${responsePath}: ${error.message}`);
-            }
-          }
-
-          const buildId =
-            response.buildId ||
-            response.id ||
-            response.build?.id ||
-            response.build?.buildId ||
-            response.data?.buildId ||
-            response.data?.id;
-
-          const embedTarget = buildId || publicKey;
           const appUrl = withDeviceConfig(explicitAppUrl || `https://appetize.io/app/${publicKey}`);
-          const embedUrl = withDeviceConfig(explicitEmbedUrl || `https://appetize.io/embed/${embedTarget}`);
 
           const config = {
             appetizeUrl: appUrl,
-            appetizeEmbedUrl: embedUrl,
             appetizeDevice: device,
             appetizeOsVersion: osVersion,
             repositoryUrl,

@@ -8,8 +8,12 @@
       :root {
         color-scheme: dark;
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: #101014;
-        color: #f4f1f8;
+        background: #000;
+        color: #fff;
+        --green: #1db954;
+        --muted: #b3b3b3;
+        --soft: #e6e6e6;
+        --border: rgba(255, 255, 255, 0.1);
       }
 
       * {
@@ -19,20 +23,59 @@
       body {
         margin: 0;
         min-height: 100vh;
-        display: grid;
-        place-items: center;
         background:
-          radial-gradient(circle at 50% 0%, rgba(29, 185, 84, 0.16), transparent 36rem),
-          linear-gradient(180deg, #111015 0%, #050507 100%);
+          radial-gradient(circle at 18% 0%, rgba(29, 185, 84, 0.18), transparent 34rem),
+          linear-gradient(180deg, #101010 0%, #000 100%);
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .topbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 28px;
+        background: rgba(0, 0, 0, 0.72);
+        border-bottom: 1px solid var(--border);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        font-size: 0.95rem;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .repo-link {
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 14px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 999px;
+        font-size: 0.88rem;
+        font-weight: 700;
+        text-decoration: none;
       }
 
       main {
-        width: min(1180px, calc(100vw - 32px));
+        width: min(1080px, calc(100vw - 32px));
+        min-height: 100vh;
+        margin: 0 auto;
         display: grid;
-        grid-template-columns: minmax(280px, 420px) minmax(320px, 390px);
+        grid-template-columns: minmax(280px, 520px) minmax(280px, 420px);
         gap: 40px;
         align-items: center;
-        padding: 32px 0;
+        padding: 96px 0 48px;
       }
 
       h1 {
@@ -44,135 +87,145 @@
 
       p {
         margin: 0 0 20px;
-        color: #cbc5d4;
+        color: var(--muted);
         font-size: 1rem;
         line-height: 1.6;
       }
 
-      a {
-        color: inherit;
-      }
-
       .actions {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
         gap: 12px;
+        max-width: 360px;
         margin-top: 24px;
       }
 
       .button {
+        min-height: 46px;
         display: inline-flex;
         align-items: center;
-        justify-content: center;
-        min-height: 44px;
-        padding: 0 18px;
+        justify-content: space-between;
+        padding: 0 18px 0 20px;
         border-radius: 999px;
-        background: #1db954;
-        color: #050507;
+        background: var(--green);
+        color: #000;
         font-weight: 800;
         text-decoration: none;
       }
 
+      .button::after {
+        content: "open";
+        font-size: 0.72rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        opacity: 0.72;
+      }
+
       .button.secondary {
-        background: rgba(255, 255, 255, 0.1);
-        color: #f4f1f8;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
       }
 
-      .button.outline {
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        background: transparent;
-        color: #f4f1f8;
-      }
-
-      .phone {
-        width: min(390px, 100%);
-        aspect-ratio: 9 / 19.5;
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        border-radius: 34px;
-        padding: 10px;
-        background: #050507;
-        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.48);
-      }
-
-      iframe {
-        width: 100%;
-        height: 100%;
-        border: 0;
-        border-radius: 26px;
-        background: #000;
-      }
-
-      .placeholder {
-        height: 100%;
-        display: grid;
-        place-items: center;
+      .panel {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.06);
         padding: 24px;
-        text-align: center;
-        border-radius: 26px;
-        background: #15131a;
-        color: #d8d2df;
+      }
+
+      .panel h2 {
+        margin: 0 0 14px;
+        font-size: 1.25rem;
+        letter-spacing: 0;
+      }
+
+      .panel ul {
+        margin: 0;
+        padding-left: 22px;
+        color: var(--soft);
+        line-height: 1.6;
+      }
+
+      .panel li + li {
+        margin-top: 10px;
+      }
+
+      .device {
+        display: grid;
+        gap: 8px;
+        margin-top: 20px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .device strong {
+        color: #fff;
       }
 
       @media (max-width: 840px) {
+        .topbar {
+          padding: 14px 16px;
+        }
+
         main {
           grid-template-columns: 1fr;
           gap: 28px;
-        }
-
-        .phone {
-          margin: 0 auto;
         }
       }
     </style>
     <script src="./app-config.js"></script>
   </head>
   <body>
+    <header class="topbar">
+      <a class="brand" href="./index.html">Spotify Mood MVP</a>
+      <a class="repo-link" href="https://github.com/Jagadeesh11200/Spotify-Prototype/" target="_blank" rel="noreferrer" data-repo-link>Project Repo</a>
+    </header>
+
     <main>
       <section>
         <h1>Spotify Mood MVP</h1>
         <p>
-          This is a native Android prototype streamed in a browser for evaluation. The app itself is not converted to
-          web; the session runs on a hosted Android device.
+          A native Android discovery prototype streamed in a browser for evaluation. The app stays mobile; the browser
+          only provides access to the hosted Android session.
         </p>
         <p>
-          Start on the Mood Board, choose a mood, and review the calibrated music discovery flow.
+          Start with the mobile session, then use the guide and system design pages to evaluate the full fellowship MVP.
         </p>
         <div class="actions">
           <a class="button" href="#" target="_blank" rel="noreferrer" data-appetize-link>Open Mobile Session</a>
-          <a class="button secondary" href="./user-flow.html" target="_blank" rel="noreferrer">User Flow Guide</a>
-          <a class="button outline" href="./ai-architecture.html" target="_blank" rel="noreferrer">AI Architecture</a>
-          <a class="button secondary" href="https://github.com/" target="_blank" rel="noreferrer" data-repo-link>Project Repo</a>
+          <a class="button secondary" href="./evaluator-guide.html" target="_blank" rel="noreferrer">Evaluator Guide</a>
+          <a class="button secondary" href="./system-design.html" target="_blank" rel="noreferrer">System Design</a>
         </div>
       </section>
 
-      <section class="phone" aria-label="Hosted Android emulator">
-        <iframe
-          src="about:blank"
-          title="Spotify Mood MVP Android session"
-          allow="clipboard-read; clipboard-write"
-          data-appetize-frame
-        ></iframe>
+      <section class="panel" aria-label="Evaluation instructions">
+        <h2>What to do first</h2>
+        <ul>
+          <li>Open Mobile Session launches the native Android MVP in Appetize.</li>
+          <li>Evaluator Guide gives a phase-by-phase test script.</li>
+          <li>System Design explains the AI-native logic behind the product bet.</li>
+        </ul>
+        <div class="device">
+          <span><strong>Device:</strong> Pixel 9 Pro</span>
+          <span><strong>OS:</strong> Android 16.0</span>
+          <span><strong>Orientation:</strong> Portrait</span>
+        </div>
       </section>
     </main>
+
     <script>
       const config = window.SPOTIFY_MOOD_MVP_CONFIG || {};
-      const fallbackUrl = "https://appetize.io";
-      const appUrl = config.appetizeUrl || fallbackUrl;
-      const embedUrl = config.appetizeEmbedUrl || appUrl;
+      const appUrl = config.appetizeUrl || "https://appetize.io";
       const repoUrl = config.repositoryUrl || "https://github.com/";
 
       document.querySelectorAll("[data-appetize-link]").forEach((link) => {
         link.href = appUrl;
       });
 
-      document.querySelectorAll("[data-appetize-frame]").forEach((frame) => {
-        frame.src = embedUrl;
+      document.querySelectorAll("[data-repo-link]").forEach((link) => {
+        link.href = repoUrl;
       });
-
-      const repoLink = document.querySelector("[data-repo-link]");
-      if (repoLink) {
-        repoLink.href = repoUrl;
-      }
     </script>
   </body>
 </html>

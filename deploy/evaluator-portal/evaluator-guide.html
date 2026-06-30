@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Evaluator Guide - Spotify Mood MVP</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #000;
+        color: #fff;
+        --green: #1db954;
+        --muted: #b3b3b3;
+        --soft: #e6e6e6;
+        --border: rgba(255, 255, 255, 0.1);
+        --maxw: 980px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at 12% 0%, rgba(29, 185, 84, 0.18), transparent 34rem),
+          linear-gradient(180deg, #101010 0%, #000 100%);
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 28px;
+        background: rgba(0, 0, 0, 0.76);
+        border-bottom: 1px solid var(--border);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        font-size: 0.95rem;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .top-actions,
+      footer {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .pill {
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 14px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        font-size: 0.88rem;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .pill.home {
+        background: var(--green);
+        border-color: transparent;
+        color: #000;
+      }
+
+      .hero,
+      main,
+      footer {
+        width: min(var(--maxw), calc(100vw - 32px));
+        margin: 0 auto;
+      }
+
+      .hero {
+        padding: 72px 0 28px;
+      }
+
+      .eyebrow,
+      .phase-label {
+        display: block;
+        color: var(--green);
+        font-size: 0.78rem;
+        font-weight: 900;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow {
+        margin-bottom: 14px;
+      }
+
+      .phase-label {
+        margin-bottom: 6px;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 790px;
+        margin-bottom: 18px;
+        font-size: clamp(2.2rem, 5vw, 4.5rem);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      h2 {
+        margin-bottom: 12px;
+        font-size: 1.45rem;
+      }
+
+      h3 {
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+      }
+
+      p {
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.7;
+      }
+
+      main {
+        padding-bottom: 72px;
+      }
+
+      .note,
+      .phase,
+      .script {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.055);
+        padding: 24px;
+      }
+
+      .note {
+        margin: 20px 0 34px;
+        border-left: 4px solid var(--green);
+      }
+
+      .journey {
+        display: grid;
+        gap: 18px;
+      }
+
+      .phase {
+        display: grid;
+        grid-template-columns: 52px minmax(0, 1fr);
+        gap: 18px;
+      }
+
+      .node {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--green);
+        color: #000;
+        font-weight: 900;
+      }
+
+      ul,
+      ol {
+        margin: 16px 0 0;
+        padding-left: 22px;
+        color: var(--soft);
+        line-height: 1.65;
+      }
+
+      li + li {
+        margin-top: 10px;
+      }
+
+      .script {
+        margin-top: 36px;
+      }
+
+      footer {
+        padding: 28px 0 64px;
+        border-top: 1px solid var(--border);
+      }
+
+      @media (max-width: 720px) {
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .phase {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+    <script src="./app-config.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="./index.html">Spotify Mood MVP</a>
+      <div class="top-actions">
+        <a class="pill home" href="./index.html">Return Home</a>
+        <a class="pill" href="https://github.com/" target="_blank" rel="noreferrer" data-repo-link>Project Repo</a>
+      </div>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Evaluator guide</span>
+      <h1>Does the first song come from habit, or from discovery?</h1>
+      <p>
+        This prototype tests one behavioral question for discovery-frustrated listeners: can Spotify shift the start
+        of a session away from familiar routes by asking for present-moment emotional context before the usual home
+        screen takes over?
+      </p>
+    </section>
+
+    <main>
+      <section class="note">
+        <h2>Scope</h2>
+        <p>
+          This is a native Android MVP running through Appetize. It uses synthetic listening data, local mock
+          recommendations, and simulated player behavior. What is under test is the interaction model: mood capture,
+          calibrated discovery, player continuity, and adaptive re-entry.
+        </p>
+      </section>
+
+      <section>
+        <h2>Three phases, in order</h2>
+        <p>Test these in sequence so the behavior change in Phase 3 makes sense.</p>
+        <div class="journey">
+          <article class="phase">
+            <div class="node">1</div>
+            <div>
+              <span class="phase-label">Phase 1</span>
+              <h3>Baseline Spotify shell</h3>
+              <p>
+                Confirm the app still feels like Spotify: Home, Search, Library, bottom navigation, mini player, full
+                player, likes, and familiar content surfaces.
+              </p>
+              <ul>
+                <li>Move between Home, Search, and Library using bottom navigation.</li>
+                <li>Start a track and open the full player.</li>
+                <li>Like or unlike a track and confirm the library state responds.</li>
+                <li>Notice that repeat behavior is easy because familiar content is always one tap away.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="phase">
+            <div class="node">2</div>
+            <div>
+              <span class="phase-label">Phase 2</span>
+              <h3>Mood Board into Right Now For You</h3>
+              <p>
+                Review the three-card Mood Board. The center card is the primary choice, while side cards act as
+                alternate emotional worlds.
+              </p>
+              <ul>
+                <li>All three mood worlds should feel distinct in color, atmosphere, and fragment language.</li>
+                <li>The center card should show the atmosphere, fragment, memory anchor, and community count clearly.</li>
+                <li>Tap a side card to bring it into the center, then select the center card.</li>
+                <li>Confirm that Home opens with the active mood visible and "Right Now For You" above regular sections.</li>
+                <li>The section header should stay clean. The emotional fragment is not repeated beside it in this build.</li>
+                <li>Play a recommendation and confirm it feeds into the normal player flow.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="phase">
+            <div class="node">3</div>
+            <div>
+              <span class="phase-label">Phase 3</span>
+              <h3>Exit memory and compact entry</h3>
+              <p>
+                This phase tests whether the discovery prompt can back off when a user repeatedly skips it, then return
+                when they actively choose a mood.
+              </p>
+              <ul>
+                <li>From the Mood Board, tap "Go to home" without selecting a card five times in a row.</li>
+                <li>On the fifth exit, Home should show a compact persistent mood tile instead of the full intercept.</li>
+                <li>Tap the tile to reopen the full triptych.</li>
+                <li>Select a card and confirm the app reaches "Right Now For You" normally.</li>
+                <li>After selection, the exit count resets and the full Mood Board can return on the next fresh session.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="script">
+        <h2>The 90-second script</h2>
+        <ol>
+          <li>Open Mobile Session and inspect the three-card Mood Board.</li>
+          <li>Swap a side card into the center, then select the center card.</li>
+          <li>Confirm "Right Now For You" appears above normal Home content.</li>
+          <li>Play a recommendation and open the player.</li>
+          <li>Return to Mood Board and exit five times to trigger the compact tile.</li>
+          <li>Tap the tile, select a mood, and confirm the full recommendation flow still works.</li>
+        </ol>
+      </section>
+    </main>
+
+    <footer>
+      <a class="pill home" href="./index.html">Return Home</a>
+      <a class="pill" href="./system-design.html">Continue to System Design</a>
+    </footer>
+
+    <script>
+      const config = window.SPOTIFY_MOOD_MVP_CONFIG || {};
+      const repoUrl = config.repositoryUrl || "https://github.com/";
+      document.querySelectorAll("[data-repo-link]").forEach((link) => {
+        link.href = repoUrl;
+      });
+    </script>
+  </body>
+</html>
