@@ -139,12 +139,43 @@ Optional GitHub secret:
 
 ```text
 APPETIZE_APP_URL
+APPETIZE_EMBED_URL
+APPETIZE_DEVICE
+APPETIZE_OS_VERSION
 ```
 
 Use `APPETIZE_APP_URL` only if your Appetize public evaluator URL differs from:
 
 ```text
 https://appetize.io/app/{APPETIZE_PUBLIC_KEY}
+```
+
+Use `APPETIZE_EMBED_URL` only if Appetize provides a dedicated iframe URL. The normal share link and the iframe link are
+not the same:
+
+```text
+Open in new tab: https://appetize.io/app/{APPETIZE_PUBLIC_KEY}
+Embed in portal: https://appetize.io/embed/{BuildId-or-PublicKey}
+```
+
+If the portal iframe shows `appetize.io refused to connect`, it usually means the iframe is using the normal `/app/...`
+share URL instead of the `/embed/...` URL.
+
+The workflow also pins the evaluator device to match the intended mobile experience:
+
+```text
+Device: Pixel 9 Pro
+URL value: pixel9pro
+OS: Android 16.0
+URL value: 16.0
+Orientation: portrait
+```
+
+These values are appended to both the Appetize open link and iframe link. Override them only if needed with:
+
+```text
+APPETIZE_DEVICE
+APPETIZE_OS_VERSION
 ```
 
 Important: the workflow updates an existing Appetize app instead of creating a new app each time. That keeps the

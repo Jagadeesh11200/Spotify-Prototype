@@ -36,6 +36,9 @@ Optional GitHub secret:
 
 ```text
 APPETIZE_APP_URL
+APPETIZE_EMBED_URL
+APPETIZE_DEVICE
+APPETIZE_OS_VERSION
 ```
 
 Use `APPETIZE_APP_URL` only if the public Appetize link you want evaluators to open differs from the default:
@@ -43,3 +46,25 @@ Use `APPETIZE_APP_URL` only if the public Appetize link you want evaluators to o
 ```text
 https://appetize.io/app/{APPETIZE_PUBLIC_KEY}
 ```
+
+Use `APPETIZE_EMBED_URL` only if Appetize gives you a specific iframe URL. The embedded preview must use the Appetize
+embed route:
+
+```text
+https://appetize.io/embed/{BuildId-or-PublicKey}
+```
+
+Do not put the normal `https://appetize.io/app/...` share link inside the iframe; Appetize may refuse to render that
+page inside Vercel.
+
+The default evaluator device is:
+
+```text
+Device: Pixel 9 Pro
+URL value: pixel9pro
+OS: Android 16.0
+URL value: 16.0
+Orientation: portrait
+```
+
+Set `APPETIZE_DEVICE` or `APPETIZE_OS_VERSION` only if you want to override this configuration.
