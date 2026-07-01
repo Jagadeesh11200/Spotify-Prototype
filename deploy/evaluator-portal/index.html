@@ -151,18 +151,6 @@
         margin-top: 10px;
       }
 
-      .device {
-        display: grid;
-        gap: 8px;
-        margin-top: 20px;
-        color: var(--muted);
-        font-size: 0.95rem;
-      }
-
-      .device strong {
-        color: #fff;
-      }
-
       @media (max-width: 840px) {
         .topbar {
           padding: 14px 16px;
@@ -179,7 +167,7 @@
   <body>
     <header class="topbar">
       <a class="brand" href="./index.html">Spotify Mood MVP</a>
-      <a class="repo-link" href="https://github.com/" target="_blank" rel="noreferrer" data-repo-link>Project Repo</a>
+      <a class="repo-link" href="https://github.com/Jagadeesh11200/Spotify-Prototype/" target="_blank" rel="noreferrer" data-repo-link>Project Repo</a>
     </header>
 
     <main>
@@ -206,19 +194,13 @@
           <li>Evaluator Guide gives a phase-by-phase test script.</li>
           <li>System Design explains the AI-native logic behind the product bet.</li>
         </ul>
-        <div class="device">
-          <span><strong>Device:</strong> OnePlus 11R</span>
-          <span><strong>OS:</strong> Android 13.0</span>
-          <span><strong>Orientation:</strong> Portrait</span>
-          <span><strong>Display:</strong> Scale to fit</span>
-        </div>
       </section>
     </main>
 
     <script>
       const config = window.SPOTIFY_MOOD_MVP_CONFIG || {};
       const appUrl = config.mobileSessionUrl || "https://app-live.browserstack.com/dashboard";
-      const repoUrl = config.repositoryUrl || "https://github.com/";
+      const repoUrl = config.repositoryUrl || "https://github.com/Jagadeesh11200/Spotify-Prototype/";
 
       document.querySelectorAll("[data-mobile-session-link]").forEach((link) => {
         link.href = appUrl;

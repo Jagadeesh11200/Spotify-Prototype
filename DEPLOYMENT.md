@@ -69,9 +69,6 @@ High-level steps:
 
 Recommended session settings:
 
-- Device: Google Pixel 9 by default.
-- OS: Android 15.0 by default.
-- Display: scale to fit.
 - Network: no special network required.
 - Launch package: `com.aistudio.spotify.gmpqlr`.
 - Main activity: `com.example.MainActivity`.
@@ -140,8 +137,6 @@ Optional GitHub secret:
 
 ```text
 BROWSERSTACK_APP_LIVE_URL
-BROWSERSTACK_DEVICE
-BROWSERSTACK_OS_VERSION
 BROWSERSTACK_SPEED
 ```
 
@@ -150,20 +145,15 @@ one generated from the uploaded APK.
 
 The current evaluator portal opens BrowserStack in a new tab. It does not embed a device iframe.
 
-The workflow also pins the evaluator device to match the intended mobile experience:
+The workflow keeps the BrowserStack launch generic and does not pin a device, OS, orientation, or display scale:
 
 ```text
-Device: Google Pixel 9
-OS: Android 15.0
-Display: scale_to_fit=true
 Speed: 1
 ```
 
-Override them only if needed with:
+Override the speed only if needed with:
 
 ```text
-BROWSERSTACK_DEVICE
-BROWSERSTACK_OS_VERSION
 BROWSERSTACK_SPEED
 ```
 

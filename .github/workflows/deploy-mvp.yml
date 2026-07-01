@@ -86,18 +86,14 @@ jobs:
       - name: Generate evaluator portal config
         env:
           BROWSERSTACK_APP_LIVE_URL: ${{ secrets.BROWSERSTACK_APP_LIVE_URL }}
-          BROWSERSTACK_DEVICE: ${{ secrets.BROWSERSTACK_DEVICE }}
-          BROWSERSTACK_OS_VERSION: ${{ secrets.BROWSERSTACK_OS_VERSION }}
           BROWSERSTACK_SPEED: ${{ secrets.BROWSERSTACK_SPEED }}
         run: |
           node <<'NODE'
           const fs = require("fs");
 
           const explicitAppLiveUrl = process.env.BROWSERSTACK_APP_LIVE_URL;
-          const device = process.env.BROWSERSTACK_DEVICE || "OnePlus 11R";
-          const osVersion = process.env.BROWSERSTACK_OS_VERSION || "13.0";
           const speed = process.env.BROWSERSTACK_SPEED || "1";
-          const repositoryUrl = `https://github.com/${process.env.GITHUB_REPOSITORY}`;
+          const repositoryUrl = "https://github.com/Jagadeesh11200/Spotify-Prototype/";
           const responsePath = "browserstack-upload-response.json";
 
           let uploadResponse = {};
@@ -112,11 +108,7 @@ jobs:
 
           const appHash = appUrl ? appUrl.replace(/^bs:\/\//, "") : "";
           const params = new URLSearchParams({
-            os: "android",
-            os_version: osVersion,
-            device,
             app_hashed_id: appHash,
-            scale_to_fit: "true",
             speed,
             start: "true"
           });
@@ -126,9 +118,6 @@ jobs:
             mobileSessionProvider: "browserstack",
             mobileSessionUrl,
             browserStackAppUrl: appUrl || null,
-            browserStackDevice: device,
-            browserStackOsVersion: osVersion,
-            browserStackScaleToFit: true,
             browserStackSpeed: speed,
             repositoryUrl,
             buildSha: process.env.GITHUB_SHA,

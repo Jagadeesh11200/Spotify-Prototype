@@ -39,20 +39,14 @@ Optional GitHub secrets:
 
 ```text
 BROWSERSTACK_APP_LIVE_URL
-BROWSERSTACK_DEVICE
-BROWSERSTACK_OS_VERSION
 BROWSERSTACK_SPEED
 ```
 
 Default BrowserStack launch configuration:
 
 ```text
-Device: OnePlus 11R
-OS: Android 13.0
-Display: scale_to_fit=true
 Speed: 1
 Start: true
 ```
 
-Set the optional BrowserStack secrets only if the selected device/OS is unavailable in your plan or you want to pin a
-specific App Live launch URL manually.
+Set `BROWSERSTACK_APP_LIVE_URL` only if you want to pin a specific App Live launch URL manually.
