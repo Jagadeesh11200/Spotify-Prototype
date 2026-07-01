@@ -1,4 +1,4 @@
-name: Deploy Android MVP
+name: Deploy Spotify Mood MVP
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-upload-deploy:
-    name: Build APK, upload to BrowserStack, deploy portal
+  deploy-browser-prototype:
+    name: Validate and deploy browser prototype
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -17,108 +17,34 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          distribution: temurin
-          java-version: "21"
-          cache: gradle
+          node-version: "22"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install Android SDK packages
-        run: |
-          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.1.0"
-
-      - name: Create debug signing key
-        run: |
-          if [ ! -f debug.keystore ]; then
-            keytool -genkeypair \
-              -v \
-              -keystore debug.keystore \
-              -storepass android \
-              -alias androiddebugkey \
-              -keypass android \
-              -keyalg RSA \
-              -keysize 2048 \
-              -validity 10000 \
-              -dname "CN=Android Debug,O=Android,C=US"
-          fi
-
-      - name: Build and test debug APK
-        run: |
-          chmod +x ./gradlew
-          ./gradlew testDebugUnitTest assembleDebug --stacktrace
-
-      - name: Save APK as workflow artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: spotify-mood-mvp-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-
-      - name: Upload APK to BrowserStack
-        env:
-          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
-          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+      - name: Validate evaluator portal
         run: |
           set -euo pipefail
 
-          if [ -z "${BROWSERSTACK_USERNAME}" ]; then
-            echo "::error::Missing BROWSERSTACK_USERNAME GitHub secret."
-            exit 1
-          fi
+          test -f deploy/evaluator-portal/index.html
+          test -f deploy/evaluator-portal/prototype.html
+          test -f deploy/evaluator-portal/prototype.css
+          test -f deploy/evaluator-portal/prototype.js
+          test -f deploy/evaluator-portal/evaluator-guide.html
+          test -f deploy/evaluator-portal/system-design.html
 
-          if [ -z "${BROWSERSTACK_ACCESS_KEY}" ]; then
-            echo "::error::Missing BROWSERSTACK_ACCESS_KEY GitHub secret."
-            exit 1
-          fi
-
-          APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
-
-          curl --fail-with-body --show-error --silent \
-            -u "${BROWSERSTACK_USERNAME}:${BROWSERSTACK_ACCESS_KEY}" \
-            -X POST "https://api-cloud.browserstack.com/app-live/upload" \
-            -F "file=@${APK_PATH}" \
-            -o browserstack-upload-response.json
+          node --check deploy/evaluator-portal/prototype.js
 
       - name: Generate evaluator portal config
-        env:
-          BROWSERSTACK_APP_LIVE_URL: ${{ secrets.BROWSERSTACK_APP_LIVE_URL }}
-          BROWSERSTACK_SPEED: ${{ secrets.BROWSERSTACK_SPEED }}
         run: |
           node <<'NODE'
           const fs = require("fs");
-
-          const explicitAppLiveUrl = process.env.BROWSERSTACK_APP_LIVE_URL;
-          const speed = process.env.BROWSERSTACK_SPEED || "1";
           const repositoryUrl = "https://github.com/Jagadeesh11200/Spotify-Prototype/";
-          const responsePath = "browserstack-upload-response.json";
-
-          let uploadResponse = {};
-          if (fs.existsSync(responsePath)) {
-            uploadResponse = JSON.parse(fs.readFileSync(responsePath, "utf8"));
-          }
-
-          const appUrl = uploadResponse.app_url;
-          if (!explicitAppLiveUrl && !appUrl) {
-            throw new Error(`BrowserStack upload response did not contain app_url. Response: ${JSON.stringify(uploadResponse)}`);
-          }
-
-          const appHash = appUrl ? appUrl.replace(/^bs:\/\//, "") : "";
-          const params = new URLSearchParams({
-            app_hashed_id: appHash,
-            speed,
-            start: "true"
-          });
-          const mobileSessionUrl = explicitAppLiveUrl || `https://app-live.browserstack.com/dashboard#${params.toString()}`;
 
           const config = {
-            mobileSessionProvider: "browserstack",
-            mobileSessionUrl,
-            browserStackAppUrl: appUrl || null,
-            browserStackSpeed: speed,
+            sessionProvider: "browser-web-replica",
+            browserSessionUrl: "./prototype.html",
+            mobileSessionUrl: "./prototype.html",
             repositoryUrl,
             buildSha: process.env.GITHUB_SHA,
             generatedAt: new Date().toISOString()
@@ -129,11 +55,6 @@ jobs:
             `window.SPOTIFY_MOOD_MVP_CONFIG = ${JSON.stringify(config, null, 2)};\n`
           );
           NODE
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
 
       - name: Deploy evaluator portal to Vercel
         env:
@@ -159,6 +80,6 @@ jobs:
           fi
 
           npm install --global vercel@latest
-          mkdir -p .vercel
-          printf '{"orgId":"%s","projectId":"%s"}' "${VERCEL_ORG_ID}" "${VERCEL_PROJECT_ID}" > .vercel/project.json
-          vercel deploy --prod --yes --token "${VERCEL_TOKEN}"
+          mkdir -p deploy/evaluator-portal/.vercel
+          printf '{"orgId":"%s","projectId":"%s"}' "${VERCEL_ORG_ID}" "${VERCEL_PROJECT_ID}" > deploy/evaluator-portal/.vercel/project.json
+          vercel deploy deploy/evaluator-portal --prod --yes --token "${VERCEL_TOKEN}"

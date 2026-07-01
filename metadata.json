@@ -1,0 +1,6 @@
+{
+  "name": "Spotify",
+  "description": "High-fidelity Spotify MVP prototype featuring a native dark theme layout, custom tab navigation, and full-bleed fluid UI screens.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

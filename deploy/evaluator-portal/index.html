@@ -174,14 +174,14 @@
       <section>
         <h1>Spotify Mood MVP</h1>
         <p>
-          A native Android discovery prototype opened through BrowserStack App Live for evaluation. The app stays
-          mobile; the browser only provides access to the hosted Android session.
+          A mobile-first web replica of the native Android discovery MVP, hosted directly on Vercel so evaluation does
+          not require APK downloads, emulator accounts, or third-party session limits.
         </p>
         <p>
-          Start with the mobile session, then use the guide and system design pages to evaluate the full fellowship MVP.
+          Start with the browser session, then use the guide and system design pages to evaluate the full fellowship MVP.
         </p>
         <div class="actions">
-          <a class="button" href="#" target="_blank" rel="noreferrer" data-mobile-session-link>Open Mobile Session</a>
+          <a class="button" href="#" target="_blank" rel="noreferrer" data-browser-session-link>Open Prototype</a>
           <a class="button secondary" href="./evaluator-guide.html" target="_blank" rel="noreferrer">Evaluator Guide</a>
           <a class="button secondary" href="./system-design.html" target="_blank" rel="noreferrer">System Design</a>
         </div>
@@ -190,7 +190,7 @@
       <section class="panel" aria-label="Evaluation instructions">
         <h2>What to do first</h2>
         <ul>
-          <li>Open Mobile Session launches the native Android MVP in BrowserStack App Live.</li>
+          <li>Open Prototype launches the browser session for the mobile-style MVP experience.</li>
           <li>Evaluator Guide gives a phase-by-phase test script.</li>
           <li>System Design explains the AI-native logic behind the product bet.</li>
         </ul>
@@ -199,10 +199,10 @@
 
     <script>
       const config = window.SPOTIFY_MOOD_MVP_CONFIG || {};
-      const appUrl = config.mobileSessionUrl || "https://app-live.browserstack.com/dashboard";
+      const appUrl = config.browserSessionUrl || config.mobileSessionUrl || "./prototype.html";
       const repoUrl = config.repositoryUrl || "https://github.com/Jagadeesh11200/Spotify-Prototype/";
 
-      document.querySelectorAll("[data-mobile-session-link]").forEach((link) => {
+      document.querySelectorAll("[data-browser-session-link]").forEach((link) => {
         link.href = appUrl;
       });
 

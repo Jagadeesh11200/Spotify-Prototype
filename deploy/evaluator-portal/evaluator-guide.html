@@ -241,9 +241,16 @@
       <section class="note">
         <h2>Scope</h2>
         <p>
-          This is a native Android MVP opened through BrowserStack App Live. It uses synthetic listening data, local mock
-          recommendations, and simulated player behavior. What is under test is the interaction model: mood capture,
-          calibrated discovery, player continuity, and adaptive re-entry.
+          The production evaluation link opens a browser-hosted session, not an Android emulator. The native
+          Android codebase remains intact in the project repository, while this hosted replica removes APK download,
+          emulator account, and third-party device-session friction. It uses the same synthetic listening data, local
+          mock recommendations, and simulated player behavior. What is under test is the interaction model: mood
+          capture, calibrated discovery, player continuity, and adaptive re-entry.
+        </p>
+        <p>
+          For a new session, refresh the prototype browser tab. The current browser tab keeps one three-card mood set
+          stable while the evaluator moves between Home, Tune, and the active Vibe chip; a refresh consumes the next
+          three cards from the shuffled fifteen-world deck.
         </p>
       </section>
 
@@ -280,19 +287,23 @@
                 <strong>Go to Home</strong> pill, animated side swipe hints, and a blinking theme-colored
                 <strong>Tap to enter</strong> cue. Each Mood Board session narrows the full 15-world library down to
                 exactly three personalized cards using time of day, recent mood history, exit behavior, novelty, and
-                emotional distance. That trio stays consistent while the app session is open, including when the user
-                returns from the Home vibe chip or Tune card; a fresh app launch generates a new trio.
+                emotional distance. The web evaluator build also uses a shuffled 15-card session deck, so repeated
+                refreshes surface the wider mood catalog instead of over-repeating the same few worlds. That trio stays
+                consistent while the browser session is open, including when the user returns from the Home vibe chip or
+                Tune card; refreshing the prototype tab consumes the next three-card set.
               </p>
               <ul>
                 <li>Confirm the screen only presents three personalized mood cards in the current session, not the full 15-world library.</li>
+                <li>Refresh the browser tab several times if needed; across roughly five refreshes, all 15 mood worlds should have appeared at least once.</li>
                 <li>All three mood worlds should feel distinct in color, atmosphere, fragment language, and top mood icon.</li>
                 <li>The center card should show the atmosphere, fragment, memory anchor, and community count clearly.</li>
-                <li>Use the side swipe hints as the cue to move across cards, then tap a side card to bring it into the center.</li>
+                <li>Swipe horizontally across the card area or use the left/right swipe buttons to cycle cards; tapping a side card should also bring it into the center.</li>
                 <li>Return to the Mood Board from Tune, the vibe chip, or the compact tile; the same three-card set should remain available during that app session.</li>
                 <li>Tap the center card or the blinking <strong>Tap to enter</strong> text to select that mood.</li>
                 <li>Tap one of the preview songs at the top of a card; it should enter that mood and start that song automatically.</li>
                 <li>Confirm that Home opens with the active mood visible and "Right Now For You" above regular sections.</li>
-                <li>The "Right Now For You" header should show the selected mood icon beside the title; individual song tiles should not have mood badges.</li>
+                <li>Switch Home filters across All, Music, Following, and Podcasts; the active Vibe chip should remain visible, while Right Now appears only in All/Music.</li>
+                <li>The "Right Now For You" header should show an enlarged selected-mood icon beside the title; individual song tiles should not have mood badges.</li>
                 <li>Play a recommendation and confirm it feeds into the normal player flow.</li>
               </ul>
             </div>
@@ -332,7 +343,7 @@
                 <li>On the fifth exit, Home should show a compact persistent mood tile instead of the full intercept.</li>
                 <li>Tap the tile to reopen the full triptych.</li>
                 <li>Select a card and confirm the app reaches "Right Now For You" normally.</li>
-                <li>After selection, the exit count resets and the full Mood Board can return on the next fresh session.</li>
+                <li>After selection, the exit count resets and the full Mood Board can return on the next refreshed browser session.</li>
               </ul>
             </div>
           </article>
@@ -342,10 +353,11 @@
       <section class="script">
         <h2>The 90-second script</h2>
         <ol>
-          <li>Open Mobile Session and inspect the three-card Mood Board, including the mood icon, swipe hints, and blinking "Tap to enter" cue.</li>
-          <li>Swap a side card into the center, then tap the center card or "Tap to enter".</li>
-          <li>Restart the Mood Board and tap a preview song to confirm the mood is entered and playback starts automatically.</li>
+          <li>Open Prototype and inspect the three-card Mood Board, including the mood icon, swipe hints, and blinking "Tap to enter" cue.</li>
+          <li>Swipe the card carousel or use the side buttons to move a side card into the center, then tap the center card or "Tap to enter".</li>
+          <li>Refresh the prototype tab for a new browser session, then tap a preview song to confirm the mood is entered and playback starts automatically.</li>
           <li>Confirm "Right Now For You" appears above normal Home content with the selected mood icon beside the section title.</li>
+          <li>Switch Home between All, Music, Following, and Podcasts and confirm the content changes without losing the active vibe.</li>
           <li>Tap the active Vibe chip to change mood, then use the chip close button to clear the mood.</li>
           <li>Tap the Tune button on the "How is your mood today?" card and select a new mood.</li>
           <li>Return to Mood Board and use the green "Go to Home" pill five times to trigger the compact tile.</li>

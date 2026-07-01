@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spotify Mood MVP Prototype</title>
+    <link rel="stylesheet" href="./prototype.css" />
+  </head>
+  <body>
+    <main class="phone-stage" aria-label="Spotify Mood MVP web replica">
+      <section class="phone-shell">
+        <div class="status-bar">
+          <span>9:41</span>
+          <span>5G 100%</span>
+        </div>
+
+        <section id="mood-board" class="screen mood-screen is-active" aria-label="Mood Board">
+          <div class="mood-glow"></div>
+          <button class="home-pill" type="button" data-go-home>Go to Home</button>
+          <h1>How are you feeling today?</h1>
+          <div class="carousel" id="carousel" aria-label="Personalized mood cards"></div>
+          <button class="swipe-hint left" type="button" data-cycle-left aria-label="Swipe left">
+            <span>&lsaquo;</span>
+            <small>swipe</small>
+          </button>
+          <button class="swipe-hint right" type="button" data-cycle-right aria-label="Swipe right">
+            <span>&rsaquo;</span>
+            <small>swipe</small>
+          </button>
+          <p class="mood-helper">Tap the card that feels like today to confirm</p>
+        </section>
+
+        <section id="home-screen" class="screen home-screen" aria-label="Home">
+          <header class="home-top">
+            <button class="avatar" type="button" aria-label="User profile" data-open-profile>U</button>
+            <div class="home-filters" aria-label="Filters">
+              <button class="filter is-active" type="button">All</button>
+              <button class="filter" type="button">Music</button>
+              <button class="filter" type="button">Podcasts</button>
+            </div>
+          </header>
+
+          <div class="mood-filter-row">
+            <div id="active-vibe" class="active-vibe is-hidden"></div>
+          </div>
+          <section id="resonance-banner" class="resonance-banner is-hidden">
+            <div>
+              <span class="eyebrow"><i></i> Resonance Sessions</span>
+              <h2>How is your mood today?</h2>
+              <p>Tune your music recommendations to your vibe.</p>
+            </div>
+            <button type="button" data-open-mood>Tune</button>
+          </section>
+
+          <section id="compact-tile" class="compact-tile is-hidden" data-open-mood>
+            <span class="tile-icon">&#9671;</span>
+            <div>
+              <strong>Find a mood for right now</strong>
+              <span>Tap to reopen Resonance Sessions</span>
+            </div>
+          </section>
+
+          <section id="right-now" class="right-now is-hidden">
+            <div class="section-title">
+              <h2>Right Now For You</h2>
+              <span id="right-now-icon" class="world-mark"></span>
+            </div>
+            <div id="right-now-list" class="song-row"></div>
+          </section>
+
+          <section>
+            <h2 class="block-title is-hidden">Recently played</h2>
+            <div id="recent-grid" class="recent-grid"></div>
+          </section>
+
+          <section id="row-section-primary">
+            <h2 id="row-title-primary" class="block-title">New Releases</h2>
+            <div id="recommended-row" class="song-row compact"></div>
+          </section>
+
+          <section id="row-section-secondary">
+            <h2 id="row-title-secondary" class="block-title">Trending Tracks</h2>
+            <div id="trending-row" class="song-row compact"></div>
+          </section>
+
+          <section id="row-section-tertiary">
+            <h2 id="row-title-tertiary" class="block-title">Acoustic & Chill</h2>
+            <div id="tertiary-row" class="song-row compact"></div>
+          </section>
+
+          <section id="artist-section" class="is-hidden">
+            <h2 id="artist-title" class="block-title">Featured Artists</h2>
+            <div id="artist-row" class="song-row compact"></div>
+          </section>
+        </section>
+
+        <section id="search-screen" class="screen app-screen search-screen" aria-label="Search">
+          <header class="app-header">
+            <button class="avatar small" type="button" aria-label="User profile" data-open-profile>U</button>
+            <h1>Search</h1>
+            <button class="header-icon" type="button" aria-label="Search with Camera">&#9711;</button>
+          </header>
+          <label class="search-box">
+            <span>&#8981;</span>
+            <input id="search-input" type="search" placeholder="What do you want to listen to?" autocomplete="off" />
+            <button id="clear-search" class="is-hidden" type="button" aria-label="Clear search">x</button>
+          </label>
+          <div id="search-content"></div>
+        </section>
+
+        <section id="library-screen" class="screen app-screen library-screen" aria-label="Your Library">
+          <header class="app-header">
+            <button class="avatar small" type="button" aria-label="User profile" data-open-profile>U</button>
+            <h1>Your Library</h1>
+            <button class="header-icon" type="button" aria-label="Search in library" data-tab-shortcut="Search">&#8981;</button>
+            <button class="header-icon" type="button" aria-label="Create playlist" data-open-create-dialog>+</button>
+          </header>
+          <div id="library-filters" class="library-filters"></div>
+          <div class="library-sort">
+            <span>&#8645; Recents</span>
+            <span>&#9638;</span>
+          </div>
+          <div id="library-list"></div>
+        </section>
+
+        <nav class="bottom-nav" aria-label="Spotify navigation">
+          <button class="nav-item is-active" type="button" data-tab="Home"><span>&#8962;</span>Home</button>
+          <button class="nav-item" type="button" data-tab="Search"><span>&#8981;</span>Search</button>
+          <button class="nav-item" type="button" data-tab="Your Library"><span>&#9637;</span>Your Library</button>
+          <button class="nav-item" type="button" data-tab="Create"><span>+</span>Create</button>
+        </nav>
+
+        <section id="mini-player" class="mini-player">
+          <div id="mini-art" class="album-art"></div>
+          <div>
+            <strong id="mini-title">As It Was</strong>
+            <span id="mini-artist">Harry Styles</span>
+          </div>
+          <button class="mini-action" type="button" aria-label="Connect to device">&#9637;</button>
+          <button class="mini-action" type="button" aria-label="Like song">&#9829;</button>
+          <button id="play-toggle" type="button" aria-label="Play or pause">&#9654;</button>
+        </section>
+
+        <section id="full-player" class="full-player is-hidden" aria-label="Now playing"></section>
+        <section id="create-sheet" class="sheet-backdrop is-hidden" aria-label="Create menu"></section>
+        <section id="create-dialog" class="dialog-backdrop is-hidden" aria-label="Create playlist dialog"></section>
+        <section id="profile-drawer" class="profile-layer is-hidden" aria-label="Profile menu"></section>
+      </section>
+    </main>
+
+    <script src="./prototype.js"></script>
+  </body>
+</html>

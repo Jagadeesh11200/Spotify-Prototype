@@ -1,21 +1,69 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Spotify Mood MVP
 
-# Run and deploy your AI Studio app
+This repository contains the Spotify discovery MVP for the fellowship submission.
 
-This contains everything you need to run your app locally.
+The native Android codebase remains in `app/`. The production evaluator link is a browser-hosted mobile replica in
+`deploy/evaluator-portal/`, so evaluators can test the MVP on a normal PC browser without APK downloads, emulator
+accounts, BrowserStack, Appetize, or device-session limits.
 
-View your app in AI Studio: https://ai.studio/apps/ba5dc6c3-1a75-4219-b7d4-bec0306d3a47
+## Production Evaluation Surface
 
-## Run Locally
+The Vercel deployment serves:
 
-**Prerequisites:**  [Android Studio](https://developer.android.com/studio)
+```text
+deploy/evaluator-portal/index.html
+deploy/evaluator-portal/prototype.html
+deploy/evaluator-portal/prototype.css
+deploy/evaluator-portal/prototype.js
+deploy/evaluator-portal/evaluator-guide.html
+deploy/evaluator-portal/system-design.html
+deploy/evaluator-portal/app-config.js
+```
 
+Open `index.html` first. It links to:
 
-1. Open Android Studio
-2. Select **Open** and choose the directory containing this project
-3. Allow Android Studio to fix any incompatibilities as it imports the project.
-4. Create a file named `.env` in the project directory and set `GEMINI_API_KEY` in that file to your Gemini API key (see `.env.example` for an example)
-5. Remove this line from the app's `build.gradle.kts` file: `signingConfig = signingConfigs.getByName("debugConfig")`
-6. Run the app on an emulator or physical device
+- `Open Prototype`: the browser session for the mobile-style prototype
+- `Evaluator Guide`: the phase-by-phase test script
+- `System Design`: the AI-native architecture and product logic
+
+Refreshing the prototype tab starts a new browser session and consumes the next 3-card mood set from the 15-card deck.
+
+## CI/CD
+
+GitHub Actions deploys automatically on pushes to `main` using `.github/workflows/deploy-mvp.yml`.
+
+Required repository secrets:
+
+```text
+VERCEL_TOKEN
+VERCEL_ORG_ID
+VERCEL_PROJECT_ID
+```
+
+The workflow validates the static portal, generates `app-config.js`, and deploys `deploy/evaluator-portal` to Vercel.
+
+## Local Testing
+
+From the repository root, serve the portal with any static server. For example:
+
+```bash
+python -m http.server 5177 --directory deploy/evaluator-portal
+```
+
+Then open:
+
+```text
+http://127.0.0.1:5177/index.html
+```
+
+## Native Android Project
+
+The Android source is still available for reference and future development.
+
+Prerequisites:
+
+- Android Studio
+- JDK 21
+- Android SDK
+
+To run the native app, open this repository in Android Studio and run the `app` module on an emulator or physical device.

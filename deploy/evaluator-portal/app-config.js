@@ -1,6 +1,6 @@
 window.SPOTIFY_MOOD_MVP_CONFIG = {
-  mobileSessionProvider: "browserstack",
-  mobileSessionUrl: "https://app-live.browserstack.com/dashboard#speed=1&start=true",
-  browserStackSpeed: "1",
+  sessionProvider: "browser-web-replica",
+  browserSessionUrl: "./prototype.html",
+  mobileSessionUrl: "./prototype.html",
   repositoryUrl: "https://github.com/Jagadeesh11200/Spotify-Prototype/"
 };
