@@ -50,8 +50,12 @@ VERCEL_PROJECT_ID
 
 1. Push the repository to GitHub.
 2. Create a Vercel project.
-3. Set the Vercel project root/output to `deploy/evaluator-portal` as a static site.
+3. Set the Vercel project Root Directory to `deploy/evaluator-portal` as a static site.
 4. Deploy.
 5. Share the Vercel URL with the evaluator.
+
+The GitHub Actions workflow runs `vercel deploy` from the repository root and does not pass
+`deploy/evaluator-portal` as a command argument. This prevents Vercel from resolving the path as
+`deploy/evaluator-portal/deploy/evaluator-portal` when the project Root Directory is already set.
 
 The primary evaluator action is `Open Prototype`, which opens `prototype.html` directly.
