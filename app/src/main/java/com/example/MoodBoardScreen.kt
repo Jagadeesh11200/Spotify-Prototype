@@ -5,6 +5,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,11 +15,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -34,7 +38,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Album
 import androidx.compose.ui.draw.shadow
 import androidx.compose.foundation.border
@@ -79,11 +82,39 @@ fun MoodBoardScreen(
     onNavigateToHome: () -> Unit
 ) {
     val moodCards by viewModel.moodCards.collectAsState()
+    val swipeHintTransition = rememberInfiniteTransition(label = "swipe_hint")
+    val leftHintOffset by swipeHintTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = -14f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1050, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "left_swipe_hint_offset"
+    )
+    val rightHintOffset by swipeHintTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 14f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1050, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "right_swipe_hint_offset"
+    )
+    val hintAlpha by swipeHintTransition.animateFloat(
+        initialValue = 0.28f,
+        targetValue = 0.82f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1050, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "swipe_hint_alpha"
+    )
     
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0C0A0E)) // Extreme deep twilight black background
+            .background(Color(0xFF19171F))
             .testTag("mood_board_screen")
     ) {
         // Subtle ambient Spotify Green glowing background overlay for branding
@@ -92,12 +123,12 @@ fun MoodBoardScreen(
                 .fillMaxWidth()
                 .height(280.dp)
                 .background(
-                    Brush.radialGradient(
+                    Brush.verticalGradient(
                         colors = listOf(
-                            Color(0xFF1DB954).copy(alpha = 0.04f),
+                            Color(0xFF2A2632),
+                            Color(0xFF19171F),
                             Color.Transparent
-                        ),
-                        center = Offset(200f, -50f)
+                        )
                     )
                 )
         )
@@ -107,25 +138,24 @@ fun MoodBoardScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
-                .padding(horizontal = 24.dp, vertical = 20.dp),
+                .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Spacer(modifier = Modifier.size(1.dp))
 
-            val centerCard = remember(moodCards) { moodCards.getOrNull(1) }
-            val amberColor = centerCard?.accentColor ?: Color(0xFFC4762A)
-
-            // Warm amber typography matching the card accent color
             Text(
-                text = "Go to home",
-                color = amberColor,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
+                text = "Go to Home",
+                color = Color.Black,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.ExtraBold,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
+                    .clip(RoundedCornerShape(999.dp))
+                    .background(Color(0xFF1ED760))
                     .clickable { viewModel.exitMoodBoard() }
                     .testTag("go_to_home_button")
-                    .padding(8.dp)
+                    .padding(horizontal = 10.dp, vertical = 5.dp)
             )
         }
 
@@ -139,7 +169,7 @@ fun MoodBoardScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
-                .padding(top = 64.dp)
+                .padding(top = 76.dp)
                 .padding(horizontal = 24.dp)
         )
 
@@ -149,7 +179,22 @@ fun MoodBoardScreen(
                 .fillMaxWidth()
                 .fillMaxHeight(0.68f)
                 .align(Alignment.Center)
-                .padding(horizontal = 4.dp),
+                .padding(horizontal = 4.dp)
+                .pointerInput(moodCards) {
+                    var totalDrag = 0f
+                    detectHorizontalDragGestures(
+                        onDragStart = { totalDrag = 0f },
+                        onHorizontalDrag = { _, dragAmount ->
+                            totalDrag += dragAmount
+                        },
+                        onDragEnd = {
+                            when {
+                                totalDrag > 64f -> viewModel.selectMoodCard(2)
+                                totalDrag < -64f -> viewModel.selectMoodCard(0)
+                            }
+                        }
+                    )
+                },
             contentAlignment = Alignment.Center
         ) {
             val configuration = LocalConfiguration.current
@@ -170,6 +215,7 @@ fun MoodBoardScreen(
                 val targetScale = if (listIndex == 1) 1.0f else 0.85f
                 val targetAlpha = if (listIndex == 1) 1.0f else 0.65f // Perfect transparency balance for secondary cards
                 val targetZIndex = if (listIndex == 1) 2f else 1f
+                val targetRotation = 0f
                 
                 // Animate properties smoothly over 220ms
                 val animatedScale by animateFloatAsState(
@@ -181,6 +227,11 @@ fun MoodBoardScreen(
                     targetValue = targetAlpha,
                     animationSpec = tween(250),
                     label = "alpha_${card.id}"
+                )
+                val animatedRotation by animateFloatAsState(
+                    targetValue = targetRotation,
+                    animationSpec = tween(250, easing = FastOutSlowInEasing),
+                    label = "rotation_${card.id}"
                 )
                 
                 // Calculate target offset so side cards are clearly visible on the triptych board
@@ -203,6 +254,9 @@ fun MoodBoardScreen(
                         .offset(x = animatedOffsetX)
                         .scale(animatedScale)
                         .alpha(animatedAlpha)
+                        .graphicsLayer {
+                            rotationZ = animatedRotation
+                        }
                         .zIndex(targetZIndex)
                         .clickable {
                             if (listIndex != 1) {
@@ -216,52 +270,34 @@ fun MoodBoardScreen(
                     MoodCard(
                         card = card,
                         isCenter = listIndex == 1,
-                        viewModel = viewModel
+                        viewModel = viewModel,
+                        onSongClick = { song ->
+                            viewModel.confirmMoodCardSelection(card, song)
+                        }
                     )
                 }
             }
 
-            // Explicit left arrow toggle button to cycles mood cards
-            IconButton(
-                onClick = {
-                    viewModel.selectMoodCard(0)
-                },
+            SwipeHint(
+                direction = SwipeHintDirection.Left,
+                accent = Color.White,
+                alpha = hintAlpha,
                 modifier = Modifier
                     .align(Alignment.CenterStart)
-                    .padding(start = 8.dp)
-                    .size(44.dp)
-                    .clip(CircleShape)
-                    .background(Color.Black.copy(alpha = 0.55f))
-                    .testTag("toggle_left_button")
-            ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowLeft,
-                    contentDescription = "Previous Mood",
-                    tint = Color.White.copy(alpha = 0.85f),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+                    .offset(x = (18f + leftHintOffset).dp)
+                    .testTag("swipe_hint_left")
+            )
 
-            // Explicit right arrow toggle button to cycle mood cards
-            IconButton(
-                onClick = {
-                    viewModel.selectMoodCard(2)
-                },
+            SwipeHint(
+                direction = SwipeHintDirection.Right,
+                accent = Color.White,
+                alpha = hintAlpha,
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .padding(end = 8.dp)
-                    .size(44.dp)
-                    .clip(CircleShape)
-                    .background(Color.Black.copy(alpha = 0.55f))
-                    .testTag("toggle_right_button")
-            ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowRight,
-                    contentDescription = "Next Mood",
-                    tint = Color.White.copy(alpha = 0.85f),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+                    .offset(x = (-18f + rightHintOffset).dp)
+                    .testTag("swipe_hint_right")
+            )
+
         }
 
         // Bottom descriptive label
@@ -289,6 +325,7 @@ fun MoodBoardScreen(
 fun MoodSongBoxes(
     card: MoodCardData,
     viewModel: SpotifyViewModel,
+    onSongClick: (Song) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val songs = remember(card) {
@@ -296,19 +333,20 @@ fun MoodSongBoxes(
     }
 
     Column(
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(3.dp),
         modifier = modifier
-            .fillMaxWidth(0.65f)
+            .fillMaxWidth(0.48f)
             .testTag("mood_song_boxes_${card.styleType}")
     ) {
         songs.forEach { song ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(6.dp))
                     .background(Color.Black.copy(alpha = 0.2f))
-                    .border(0.5.dp, Color.White.copy(alpha = 0.08f), RoundedCornerShape(8.dp))
-                    .padding(horizontal = 8.dp, vertical = 4.dp),
+                    .border(0.5.dp, Color.White.copy(alpha = 0.08f), RoundedCornerShape(6.dp))
+                    .clickable { onSongClick(song) }
+                    .padding(horizontal = 5.dp, vertical = 3.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 ProceduralArt(
@@ -317,12 +355,12 @@ fun MoodSongBoxes(
                     isCircle = false,
                     gradientColors = song.gradientColors,
                     modifier = Modifier
-                        .size(26.dp)
+                        .size(17.dp)
                         .clip(RoundedCornerShape(4.dp))
                         .shadow(0.5.dp, RoundedCornerShape(4.dp))
                 )
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(5.dp))
 
                 Column(
                     modifier = Modifier.weight(1f),
@@ -331,16 +369,15 @@ fun MoodSongBoxes(
                     Text(
                         text = song.title,
                         color = Color.White,
-                        fontSize = 10.sp,
+                        fontSize = 8.sp,
                         fontWeight = FontWeight.Bold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Spacer(modifier = Modifier.height(0.5.dp))
                     Text(
                         text = song.artist,
                         color = Color.White.copy(alpha = 0.6f),
-                        fontSize = 8.sp,
+                        fontSize = 6.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -354,7 +391,8 @@ fun MoodSongBoxes(
 fun MoodCard(
     card: MoodCardData,
     isCenter: Boolean,
-    viewModel: SpotifyViewModel
+    viewModel: SpotifyViewModel,
+    onSongClick: (Song) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -369,6 +407,15 @@ fun MoodCard(
         // LAYER 1: Animated Emotional Illustration Character (Atmospheric Canvas)
         AtmosphericVisualBackground(styleType = card.styleType)
 
+        MoodEnterCue(
+            card = card,
+            isCenter = isCenter,
+            modifier = Modifier
+                .align(Alignment.Center)
+                .offset(y = (-18).dp)
+                .testTag("mood_enter_cue_${card.id}")
+        )
+
         // Overlay card contents with top scrim for readability
         Column(
             modifier = Modifier
@@ -376,19 +423,35 @@ fun MoodCard(
                 .padding(horizontal = 24.dp, vertical = 24.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // TOP HEADER: A list of 3 boxes that better explains the songs in the mood
-            MoodSongBoxes(
-                card = card,
-                viewModel = viewModel,
+            Column(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-                    .padding(bottom = 12.dp)
-            )
+                    .offset(y = (-22).dp)
+                    .padding(bottom = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                MoodWorldIcon(
+                    card = card,
+                    modifier = Modifier
+                        .size(if (isCenter) 52.dp else 42.dp)
+                        .testTag("mood_world_icon_${card.id}")
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                // TOP HEADER: A list of 2 boxes that previews songs in the mood
+                MoodSongBoxes(
+                    card = card,
+                    viewModel = viewModel,
+                    onSongClick = onSongClick
+                )
+            }
 
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = if (isCenter) 40.dp else 28.dp)
+                    .offset(y = (-6).dp)
+                    .padding(bottom = if (isCenter) 24.dp else 18.dp)
             ) {
                 // LAYER 2: Emotional Fragment (Warm typography, music-native) - Font sizes adjusted for responsive wrapping without truncation
                 Text(
@@ -469,6 +532,137 @@ fun MoodCard(
             }
         }
     }
+}
+
+@Composable
+fun MoodEnterCue(
+    card: MoodCardData,
+    isCenter: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val infiniteTransition = rememberInfiniteTransition(label = "tap_to_enter_${card.id}")
+    val textAlpha by infiniteTransition.animateFloat(
+        initialValue = if (isCenter) 0.35f else 0.18f,
+        targetValue = if (isCenter) 1.0f else 0.44f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(900, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "tap_to_enter_alpha_${card.id}"
+    )
+
+    Box(
+        modifier = modifier
+            .width(if (isCenter) 142.dp else 112.dp)
+            .height(if (isCenter) 44.dp else 36.dp)
+            .alpha(textAlpha),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Tap to enter",
+            color = card.accentColor,
+            fontSize = if (isCenter) 16.sp else 13.sp,
+            fontWeight = FontWeight.ExtraBold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(horizontal = if (isCenter) 18.dp else 14.dp, vertical = if (isCenter) 9.dp else 7.dp)
+        )
+    }
+}
+
+enum class SwipeHintDirection {
+    Left,
+    Right
+}
+
+@Composable
+fun SwipeHint(
+    direction: SwipeHintDirection,
+    accent: Color,
+    alpha: Float,
+    modifier: Modifier = Modifier
+) {
+    val arrow = if (direction == SwipeHintDirection.Left) Icons.Default.KeyboardArrowLeft else Icons.Default.KeyboardArrowRight
+    val label = if (direction == SwipeHintDirection.Left) "Swipe" else "Swipe"
+    Column(
+        modifier = modifier
+            .alpha(alpha)
+            .clip(RoundedCornerShape(999.dp))
+            .background(Color.Black.copy(alpha = 0.22f))
+            .border(1.dp, accent.copy(alpha = 0.12f), RoundedCornerShape(999.dp))
+            .padding(horizontal = 6.dp, vertical = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            imageVector = arrow,
+            contentDescription = "$label ${direction.name.lowercase()}",
+            tint = accent.copy(alpha = 0.86f),
+            modifier = Modifier.size(26.dp)
+        )
+        Spacer(modifier = Modifier.height(3.dp))
+        Text(
+            text = "swipe",
+            color = accent.copy(alpha = 0.68f),
+            fontSize = 9.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+@Composable
+fun MoodWorldIcon(
+    card: MoodCardData,
+    modifier: Modifier = Modifier,
+    emphasized: Boolean = false
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        if (emphasized) {
+            Icon(
+                painter = painterResource(id = moodIconRes(card.id)),
+                contentDescription = null,
+                tint = card.accentColor.copy(alpha = 0.55f),
+                modifier = Modifier
+                    .fillMaxSize(0.98f)
+                    .offset(x = 0.65.dp)
+            )
+            Icon(
+                painter = painterResource(id = moodIconRes(card.id)),
+                contentDescription = null,
+                tint = card.accentColor.copy(alpha = 0.45f),
+                modifier = Modifier
+                    .fillMaxSize(0.98f)
+                    .offset(y = 0.65.dp)
+            )
+        }
+        Icon(
+            painter = painterResource(id = moodIconRes(card.id)),
+            contentDescription = "${card.title} mood icon",
+            tint = card.accentColor,
+            modifier = Modifier.fillMaxSize(if (emphasized) 1.0f else 0.94f)
+        )
+    }
+}
+
+fun moodIconRes(cardId: String): Int = when (cardId) {
+    "heavy" -> R.drawable.mood_01_amber_interior
+    "ready" -> R.drawable.mood_02_coastal_morning
+    "electric" -> R.drawable.mood_03_urban_night
+    "joyful" -> R.drawable.mood_04_sunlit_meadow
+    "melancholic" -> R.drawable.mood_05_deep_ocean
+    "vast" -> R.drawable.mood_06_foggy_forest
+    "world7" -> R.drawable.mood_07_storm_approaching
+    "world8" -> R.drawable.mood_08_late_afternoon_gold
+    "world9" -> R.drawable.mood_09_open_highway
+    "world10" -> R.drawable.mood_10_still_water
+    "world11" -> R.drawable.mood_11_electric_blue
+    "world12" -> R.drawable.mood_12_warm_kitchen
+    "world13" -> R.drawable.mood_13_late_winter
+    "world14" -> R.drawable.mood_14_golden_dusk
+    "world15" -> R.drawable.mood_15_breaking_open
+    else -> R.drawable.mood_01_amber_interior
 }
 
 @Composable

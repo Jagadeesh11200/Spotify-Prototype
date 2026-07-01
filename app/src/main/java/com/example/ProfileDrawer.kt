@@ -95,7 +95,7 @@ fun ProfileDrawer(
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "J",
+                                text = "U",
                                 color = Color.White,
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold
@@ -106,7 +106,7 @@ fun ProfileDrawer(
 
                         Column {
                             Text(
-                                text = "Jagadeesh",
+                                text = "User",
                                 color = ThemeOnBackground,
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold

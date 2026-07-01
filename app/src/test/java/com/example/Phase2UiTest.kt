@@ -31,7 +31,7 @@ class Phase2UiTest {
         val viewModel = SpotifyViewModel()
         
         // Select a specific card from the pool, e.g. "heavy" (Amber Interior)
-        val heavyCard = viewModel.moodCardsPool.find { it.id == "heavy" }
+        val heavyCard = viewModel.allMoodCards.find { it.id == "heavy" }
         assertNotNull("Amber Interior card should exist in pool", heavyCard)
         viewModel.confirmMoodCardSelection(heavyCard!!)
 
@@ -73,7 +73,7 @@ class Phase2UiTest {
     @Test
     fun testRightNowRecommendationsCount() {
         val viewModel = SpotifyViewModel()
-        val heavyCard = viewModel.moodCardsPool.find { it.id == "heavy" }
+        val heavyCard = viewModel.allMoodCards.find { it.id == "heavy" }
         viewModel.confirmMoodCardSelection(heavyCard!!)
 
         composeTestRule.setContent {
@@ -84,7 +84,7 @@ class Phase2UiTest {
 
         // Verify that calibrated recommendations exist
         val recommendations = viewModel.rightNowRecommendations.value
-        assertEquals("Should have exactly 8 recommendations", 8, recommendations.size)
+        assertEquals("Should have exactly 10 recommendations", 10, recommendations.size)
 
         // Verify the first 3 recommended songs are displayed in the UI (guaranteed visible without horizontal scroll virtualization)
         try {
@@ -108,7 +108,7 @@ class Phase2UiTest {
     @Test
     fun testClickingRecommendationPlaysSongAndTracksMetric() {
         val viewModel = SpotifyViewModel()
-        val heavyCard = viewModel.moodCardsPool.find { it.id == "heavy" }
+        val heavyCard = viewModel.allMoodCards.find { it.id == "heavy" }
         viewModel.confirmMoodCardSelection(heavyCard!!)
 
         composeTestRule.setContent {
@@ -136,7 +136,7 @@ class Phase2UiTest {
     @Test
     fun testActiveVibeChipAllowsClearing() {
         val viewModel = SpotifyViewModel()
-        val heavyCard = viewModel.moodCardsPool.find { it.id == "heavy" }
+        val heavyCard = viewModel.allMoodCards.find { it.id == "heavy" }
         viewModel.confirmMoodCardSelection(heavyCard!!)
 
         composeTestRule.setContent {

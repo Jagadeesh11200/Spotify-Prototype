@@ -7,6 +7,8 @@ object SessionStateManager {
     private var inMemoryExitCount = 0
     private var inMemoryPrefersTile = false
     private var inMemoryWorldHistory = mutableListOf<String>()
+    private var inMemoryMoodSessionIndex = 0
+    private var inMemoryLastMoodSessionCardIds = emptyList<String>()
     
     private var context: Context? = null
 
@@ -99,10 +101,49 @@ object SessionStateManager {
         }
     }
 
+    fun beginMoodSession(): Int {
+        val prefs = getPrefs()
+        return if (prefs != null) {
+            val nextIndex = prefs.getInt("moodBoardSessionIndex", 0) + 1
+            prefs.edit().putInt("moodBoardSessionIndex", nextIndex).apply()
+            nextIndex
+        } else {
+            inMemoryMoodSessionIndex += 1
+            inMemoryMoodSessionIndex
+        }
+    }
+
+    fun getMoodSessionIndex(): Int {
+        val prefs = getPrefs()
+        return prefs?.getInt("moodBoardSessionIndex", 0) ?: inMemoryMoodSessionIndex
+    }
+
+    fun setLastMoodSessionCardIds(cardIds: List<String>) {
+        val serialized = cardIds.joinToString(",")
+        val prefs = getPrefs()
+        if (prefs != null) {
+            prefs.edit().putString("lastMoodSessionCardIds", serialized).apply()
+        } else {
+            inMemoryLastMoodSessionCardIds = cardIds
+        }
+    }
+
+    fun getLastMoodSessionCardIds(): List<String> {
+        val prefs = getPrefs()
+        return if (prefs != null) {
+            val serialized = prefs.getString("lastMoodSessionCardIds", "") ?: ""
+            if (serialized.isEmpty()) emptyList() else serialized.split(",")
+        } else {
+            inMemoryLastMoodSessionCardIds
+        }
+    }
+
     fun resetAllForTesting() {
         inMemoryExitCount = 0
         inMemoryPrefersTile = false
         inMemoryWorldHistory.clear()
+        inMemoryMoodSessionIndex = 0
+        inMemoryLastMoodSessionCardIds = emptyList()
         
         val prefs = getPrefs()
         prefs?.edit()?.clear()?.apply()

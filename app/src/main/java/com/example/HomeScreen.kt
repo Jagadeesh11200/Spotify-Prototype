@@ -46,7 +46,7 @@ fun HomeScreen(
     val podcasts by viewModel.podcasts.collectAsState()
     val followedArtists by viewModel.followedArtists.collectAsState()
     val newReleases by viewModel.newReleases.collectAsState()
-    val topIndianTracks by viewModel.topIndianTracks.collectAsState()
+    val trendingTracks by viewModel.trendingTracks.collectAsState()
     val acousticChill by viewModel.acousticChill.collectAsState()
     val globalTop50 by viewModel.globalTop50.collectAsState()
     val artists by viewModel.artists.collectAsState()
@@ -229,11 +229,11 @@ fun HomeScreen(
                     )
                 }
 
-                // Top Indian Tracks Row
+                // Trending tracks row
                 item {
                     HomeHorizontalSection(
-                        title = "Top Indian Tracks",
-                        songs = topIndianTracks,
+                        title = "Trending Tracks",
+                        songs = trendingTracks,
                         onSongClick = { viewModel.selectSong(it) }
                     )
                 }
@@ -339,7 +339,7 @@ fun HomeScreen(
                 item {
                     HomeHorizontalSection(
                         title = "Concerts & Showcases",
-                        songs = topIndianTracks,
+                        songs = trendingTracks,
                         onSongClick = { viewModel.selectSong(it) }
                     )
                 }
@@ -871,19 +871,27 @@ fun MoodDiscoverSection(
     onChangeMoodClick: () -> Unit,
     onClearMood: () -> Unit
 ) {
-    // Curate songs based on the mood styleType
-    val curatedSongs = when (mood.styleType) {
-        "heavy" -> allSongs.filter { 
-            it.id in listOf("ac1", "ac2", "ac3", "s10", "s9")
-        }
-        "ready" -> allSongs.filter { 
-            it.id in listOf("nr1", "nr3", "tit3", "s3", "gt1")
-        }
-        "electric" -> allSongs.filter { 
-            it.id in listOf("nr2", "tit2", "gt2", "gt3", "s2")
-        }
-        else -> allSongs.take(5)
-    }
+    val moodPrefix = mapOf(
+        "heavy" to "m01_",
+        "ready" to "m02_",
+        "electric" to "m03_",
+        "joyful" to "m04_",
+        "melancholic" to "m05_",
+        "vast" to "m06_",
+        "world7" to "m07_",
+        "world8" to "m08_",
+        "world9" to "m09_",
+        "world10" to "m10_",
+        "world11" to "m11_",
+        "world12" to "m12_",
+        "world13" to "m13_",
+        "world14" to "m14_",
+        "world15" to "m15_"
+    )[mood.id]
+    val curatedSongs = moodPrefix
+        ?.let { prefix -> allSongs.filter { it.id.startsWith(prefix) }.take(5) }
+        ?.takeIf { it.isNotEmpty() }
+        ?: allSongs.filter { !it.id.startsWith("p_ep") }.take(5)
 
     Column(
         modifier = Modifier
@@ -981,14 +989,24 @@ fun MoodDiscoverSection(
                     Column(
                         modifier = Modifier.padding(8.dp)
                     ) {
-                        ProceduralArt(
-                            id = song.id,
-                            title = song.title,
-                            gradientColors = song.gradientColors,
-                            modifier = Modifier
-                                .size(114.dp)
-                                .clip(RoundedCornerShape(6.dp))
-                        )
+                        Box {
+                            ProceduralArt(
+                                id = song.id,
+                                title = song.title,
+                                gradientColors = song.gradientColors,
+                                modifier = Modifier
+                                    .size(114.dp)
+                                    .clip(RoundedCornerShape(6.dp))
+                            )
+
+                            MoodWorldIcon(
+                                card = mood,
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .padding(6.dp)
+                                    .size(30.dp),
+                            )
+                        }
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(
                             text = song.title,
@@ -1017,6 +1035,8 @@ fun RightNowForYouSection(
     viewModel: SpotifyViewModel,
     songs: List<Song>
 ) {
+    val selectedMood by viewModel.selectedMood.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -1036,6 +1056,17 @@ fun RightNowForYouSection(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.testTag("right_now_header_left")
             )
+
+            selectedMood?.let { mood ->
+                Spacer(modifier = Modifier.width(10.dp))
+                MoodWorldIcon(
+                    card = mood,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .testTag("right_now_mood_icon_${mood.id}"),
+                    emphasized = true
+                )
+            }
         }
 
         // Horizontally scrollable row with 8 recommendation songs

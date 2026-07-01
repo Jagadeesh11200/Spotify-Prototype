@@ -94,8 +94,8 @@ jobs:
           const fs = require("fs");
 
           const explicitAppLiveUrl = process.env.BROWSERSTACK_APP_LIVE_URL;
-          const device = process.env.BROWSERSTACK_DEVICE || "Google Pixel 9";
-          const osVersion = process.env.BROWSERSTACK_OS_VERSION || "15.0";
+          const device = process.env.BROWSERSTACK_DEVICE || "OnePlus 11R";
+          const osVersion = process.env.BROWSERSTACK_OS_VERSION || "13.0";
           const speed = process.env.BROWSERSTACK_SPEED || "1";
           const repositoryUrl = `https://github.com/${process.env.GITHUB_REPOSITORY}`;
           const responsePath = "browserstack-upload-response.json";

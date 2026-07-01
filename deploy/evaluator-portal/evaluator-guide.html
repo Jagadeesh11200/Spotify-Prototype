@@ -248,8 +248,8 @@
       </section>
 
       <section>
-        <h2>Three phases, in order</h2>
-        <p>Test these in sequence so the behavior change in Phase 3 makes sense.</p>
+        <h2>Evaluation checkpoints, in order</h2>
+        <p>Test these in sequence so the behavior changes across the MVP are easy to follow.</p>
         <div class="journey">
           <article class="phase">
             <div class="node">1</div>
@@ -275,15 +275,24 @@
               <span class="phase-label">Phase 2</span>
               <h3>Mood Board into Right Now For You</h3>
               <p>
-                Review the three-card Mood Board. The center card is the primary choice, while side cards act as
-                alternate emotional worlds.
+                Review the three-card Mood Board. The center card is the primary choice, while side cards preview
+                alternate emotional worlds. The screen now uses a lighter Spotify-style dark background, a green
+                <strong>Go to Home</strong> pill, animated side swipe hints, and a blinking theme-colored
+                <strong>Tap to enter</strong> cue. Each Mood Board session narrows the full 15-world library down to
+                exactly three personalized cards using time of day, recent mood history, exit behavior, novelty, and
+                emotional distance. That trio stays consistent while the app session is open, including when the user
+                returns from the Home vibe chip or Tune card; a fresh app launch generates a new trio.
               </p>
               <ul>
-                <li>All three mood worlds should feel distinct in color, atmosphere, and fragment language.</li>
+                <li>Confirm the screen only presents three personalized mood cards in the current session, not the full 15-world library.</li>
+                <li>All three mood worlds should feel distinct in color, atmosphere, fragment language, and top mood icon.</li>
                 <li>The center card should show the atmosphere, fragment, memory anchor, and community count clearly.</li>
-                <li>Tap a side card to bring it into the center, then select the center card.</li>
+                <li>Use the side swipe hints as the cue to move across cards, then tap a side card to bring it into the center.</li>
+                <li>Return to the Mood Board from Tune, the vibe chip, or the compact tile; the same three-card set should remain available during that app session.</li>
+                <li>Tap the center card or the blinking <strong>Tap to enter</strong> text to select that mood.</li>
+                <li>Tap one of the preview songs at the top of a card; it should enter that mood and start that song automatically.</li>
                 <li>Confirm that Home opens with the active mood visible and "Right Now For You" above regular sections.</li>
-                <li>The section header should stay clean. The emotional fragment is not repeated beside it in this build.</li>
+                <li>The "Right Now For You" header should show the selected mood icon beside the title; individual song tiles should not have mood badges.</li>
                 <li>Play a recommendation and confirm it feeds into the normal player flow.</li>
               </ul>
             </div>
@@ -293,13 +302,33 @@
             <div class="node">3</div>
             <div>
               <span class="phase-label">Phase 3</span>
+              <h3>Change, cancel, and tune again</h3>
+              <p>
+                After a mood is selected, Home keeps discovery flexible instead of locking the user into that choice.
+                This is the path shown by the active vibe chip and the mood tuning card.
+              </p>
+              <ul>
+                <li>Find the active <strong>Vibe: selected mood</strong> chip near the top of Home.</li>
+                <li>Tap the chip body to reopen the Mood Board and change to a different mood.</li>
+                <li>Use the small close/cancel button on the chip to clear the selected mood.</li>
+                <li>After clearing, confirm the "How is your mood today?" card appears with the resonance sessions label.</li>
+                <li>Tap <strong>Tune</strong> on that card and confirm the Mood Board opens again.</li>
+                <li>Select a new card and confirm "Right Now For You" returns with refreshed recommendations.</li>
+              </ul>
+            </div>
+          </article>
+
+          <article class="phase">
+            <div class="node">4</div>
+            <div>
+              <span class="phase-label">Phase 4</span>
               <h3>Exit memory and compact entry</h3>
               <p>
                 This phase tests whether the discovery prompt can back off when a user repeatedly skips it, then return
                 when they actively choose a mood.
               </p>
               <ul>
-                <li>From the Mood Board, tap "Go to home" without selecting a card five times in a row.</li>
+                <li>From the Mood Board, tap the green <strong>Go to Home</strong> pill without selecting a card five times in a row.</li>
                 <li>On the fifth exit, Home should show a compact persistent mood tile instead of the full intercept.</li>
                 <li>Tap the tile to reopen the full triptych.</li>
                 <li>Select a card and confirm the app reaches "Right Now For You" normally.</li>
@@ -313,11 +342,13 @@
       <section class="script">
         <h2>The 90-second script</h2>
         <ol>
-          <li>Open Mobile Session and inspect the three-card Mood Board.</li>
-          <li>Swap a side card into the center, then select the center card.</li>
-          <li>Confirm "Right Now For You" appears above normal Home content.</li>
-          <li>Play a recommendation and open the player.</li>
-          <li>Return to Mood Board and exit five times to trigger the compact tile.</li>
+          <li>Open Mobile Session and inspect the three-card Mood Board, including the mood icon, swipe hints, and blinking "Tap to enter" cue.</li>
+          <li>Swap a side card into the center, then tap the center card or "Tap to enter".</li>
+          <li>Restart the Mood Board and tap a preview song to confirm the mood is entered and playback starts automatically.</li>
+          <li>Confirm "Right Now For You" appears above normal Home content with the selected mood icon beside the section title.</li>
+          <li>Tap the active Vibe chip to change mood, then use the chip close button to clear the mood.</li>
+          <li>Tap the Tune button on the "How is your mood today?" card and select a new mood.</li>
+          <li>Return to Mood Board and use the green "Go to Home" pill five times to trigger the compact tile.</li>
           <li>Tap the tile, select a mood, and confirm the full recommendation flow still works.</li>
         </ol>
       </section>

@@ -39,8 +39,8 @@ class Phase3UiTest {
             }
         }
 
-        // Verify that "Go to home" button is clearly visible and exists
-        composeTestRule.onNodeWithText("Go to home").assertIsDisplayed()
+        // Verify that "Go to Home" button is clearly visible and exists
+        composeTestRule.onNodeWithText("Go to Home").assertIsDisplayed()
     }
 
     @Test

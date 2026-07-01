@@ -11,8 +11,14 @@
         background: #000;
         color: #fff;
         --green: #1db954;
+        --green-soft: #58d682;
+        --teal: #64d6c2;
+        --amber: #f2b661;
+        --blue: #a9c7e8;
         --muted: #b3b3b3;
         --soft: #e6e6e6;
+        --surface: #121212;
+        --surface-2: #181818;
         --border: rgba(255, 255, 255, 0.1);
         --maxw: 980px;
       }
@@ -29,12 +35,16 @@
         margin: 0;
         min-height: 100vh;
         background:
-          radial-gradient(circle at 82% 0%, rgba(29, 185, 84, 0.16), transparent 32rem),
+          radial-gradient(circle at 82% 0%, rgba(29, 185, 84, 0.18), transparent 34rem),
           linear-gradient(180deg, #101010 0%, #000 100%);
       }
 
       a {
         color: inherit;
+      }
+
+      strong {
+        color: #fff;
       }
 
       .topbar {
@@ -46,7 +56,7 @@
         justify-content: space-between;
         gap: 16px;
         padding: 18px 28px;
-        background: rgba(0, 0, 0, 0.76);
+        background: rgba(0, 0, 0, 0.78);
         border-bottom: 1px solid var(--border);
         backdrop-filter: blur(18px);
       }
@@ -85,7 +95,7 @@
       }
 
       .hero,
-      .subnav,
+      .legend,
       main,
       footer {
         width: min(var(--maxw), calc(100vw - 32px));
@@ -93,25 +103,23 @@
       }
 
       .hero {
-        padding: 72px 0 28px;
+        padding: 72px 0 26px;
       }
 
       .eyebrow,
-      .tag {
+      .tag,
+      .act,
+      .mini-label {
         display: block;
-        color: var(--green);
-        font-size: 0.78rem;
+        color: var(--green-soft);
+        font-size: 0.76rem;
         font-weight: 900;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.12em;
         text-transform: uppercase;
       }
 
       .eyebrow {
         margin-bottom: 14px;
-      }
-
-      .tag {
-        margin-bottom: 10px;
       }
 
       h1,
@@ -123,115 +131,222 @@
       }
 
       h1 {
-        max-width: 820px;
-        margin-bottom: 18px;
-        font-size: clamp(2.2rem, 5vw, 4.5rem);
+        max-width: 760px;
+        margin-bottom: 20px;
+        font-size: clamp(2.2rem, 5vw, 4.45rem);
         line-height: 1;
         letter-spacing: 0;
       }
 
       h2 {
-        margin-bottom: 12px;
+        margin-bottom: 10px;
         font-size: 1.45rem;
+        line-height: 1.2;
       }
 
       h3 {
-        margin: 24px 0 10px;
-        font-size: 1.08rem;
+        margin-bottom: 10px;
+        font-size: 1.12rem;
       }
 
       h4 {
-        margin: 0 0 6px;
-        font-size: 1rem;
+        margin: 0 0 4px;
+        font-size: 0.96rem;
       }
 
       p {
         color: var(--muted);
         font-size: 1rem;
-        line-height: 1.7;
+        line-height: 1.72;
       }
 
-      .subnav {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
+      .lead {
+        max-width: 780px;
+        font-size: 1.06rem;
+      }
+
+      .legend {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
         padding-bottom: 10px;
       }
 
-      .subnav a {
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        color: var(--soft);
-        padding: 8px 12px;
-        font-size: 0.82rem;
-        font-weight: 800;
-        text-decoration: none;
-      }
-
-      main {
-        display: grid;
-        gap: 18px;
-        padding: 18px 0 72px;
-      }
-
-      .module {
-        scroll-margin-top: 88px;
+      .key,
+      .module,
+      .synthesis,
+      .closer {
         border: 1px solid var(--border);
         border-radius: 8px;
         background: rgba(255, 255, 255, 0.055);
-        padding: 24px;
       }
 
-      ol,
-      ul {
-        margin: 16px 0 0;
-        padding-left: 22px;
-        color: var(--soft);
-        line-height: 1.65;
+      .key {
+        display: grid;
+        grid-template-columns: 12px minmax(0, 1fr);
+        gap: 12px;
+        padding: 16px;
       }
 
-      li + li {
-        margin-top: 12px;
+      .swatch {
+        width: 10px;
+        height: 10px;
+        margin-top: 5px;
+        border-radius: 3px;
       }
 
-      code {
-        border: 1px solid var(--border);
-        border-radius: 5px;
-        background: #181818;
-        color: var(--green);
-        padding: 2px 6px;
-        font-size: 0.86rem;
+      .swatch.ai {
+        background: var(--amber);
       }
 
-      .table-wrap {
-        overflow-x: auto;
-        margin-top: 16px;
+      .swatch.ux {
+        background: var(--teal);
       }
 
-      table {
-        width: 100%;
-        min-width: 620px;
-        border-collapse: collapse;
+      .key h4 {
+        color: #fff;
+        font-size: 0.88rem;
       }
 
-      th,
-      td {
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-        text-align: left;
-        vertical-align: top;
-      }
-
-      th {
-        color: var(--muted);
-        font-size: 0.78rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      td {
-        color: var(--soft);
+      .key p {
+        margin: 0;
+        font-size: 0.9rem;
         line-height: 1.55;
+      }
+
+      main {
+        padding: 18px 0 72px;
+      }
+
+      .rail {
+        margin: 46px 0 14px;
+      }
+
+      .rail-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .rail-line {
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      .rail p {
+        margin: 8px 0 0;
+        color: #777;
+        font-size: 0.92rem;
+      }
+
+      .module {
+        padding: 24px;
+        margin-top: 18px;
+      }
+
+      .tag {
+        margin-bottom: 10px;
+        color: var(--green-soft);
+      }
+
+      .decision {
+        margin-bottom: 16px;
+        color: var(--teal);
+        font-style: italic;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 16px 0 4px;
+      }
+
+      .chip {
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--soft);
+        padding: 7px 11px;
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
+      .insight,
+      .surface {
+        margin-top: 16px;
+        padding: 16px;
+        border-radius: 8px;
+      }
+
+      .insight {
+        border: 1px solid rgba(242, 182, 97, 0.28);
+        background: rgba(242, 182, 97, 0.075);
+      }
+
+      .surface {
+        border: 1px solid rgba(100, 214, 194, 0.24);
+        background: rgba(100, 214, 194, 0.075);
+      }
+
+      .held {
+        border-color: rgba(169, 199, 232, 0.28);
+        background: rgba(169, 199, 232, 0.075);
+      }
+
+      .insight .mini-label {
+        color: var(--amber);
+      }
+
+      .surface .mini-label {
+        color: var(--teal);
+      }
+
+      .held .mini-label {
+        color: var(--blue);
+      }
+
+      .insight p,
+      .surface p {
+        margin: 8px 0 0;
+      }
+
+      .dial {
+        display: flex;
+        justify-content: center;
+        margin: 18px 0;
+        overflow-x: auto;
+      }
+
+      .synthesis {
+        margin-top: 18px;
+        padding: 22px;
+      }
+
+      .synthesis + .synthesis {
+        margin-top: 14px;
+      }
+
+      .synthesis.ai {
+        border-left: 4px solid var(--amber);
+      }
+
+      .synthesis.ux {
+        border-left: 4px solid var(--teal);
+      }
+
+      .synthesis.base {
+        border-left: 4px solid var(--blue);
+      }
+
+      .closer {
+        margin-top: 24px;
+        padding: 24px;
+        border-color: rgba(29, 185, 84, 0.32);
+        background:
+          radial-gradient(circle at 0% 0%, rgba(29, 185, 84, 0.13), transparent 28rem),
+          rgba(255, 255, 255, 0.055);
       }
 
       footer {
@@ -239,10 +354,14 @@
         border-top: 1px solid var(--border);
       }
 
-      @media (max-width: 720px) {
+      @media (max-width: 760px) {
         .topbar {
           align-items: flex-start;
           flex-direction: column;
+        }
+
+        .legend {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -259,144 +378,380 @@
 
     <section class="hero">
       <span class="eyebrow">System design</span>
-      <h1>Why a query cannot answer what a model can.</h1>
-      <p>
-        The feature needs to understand what a listener emotionally needs right now. That signal is not the same as
-        historical preference, and it cannot be derived only by counting repeat plays.
+      <h1>A small card. A great deal of judgment behind it.</h1>
+      <p class="lead">
+        For this listener, the first song of almost every session is decided before the app even opens: a familiar
+        route, chosen on autopilot. That is the habit we are trying to interrupt, and the only place to interrupt it is
+        the entry moment itself. So the card has to feel effortless and certain the instant it appears, or the person
+        routes around it. <strong>Everything below is the machinery that earns that certainty</strong>, and at every
+        decision, AI is doing the one thing a fixed rule cannot, so the listener never has to work for it.
       </p>
     </section>
 
-    <nav class="subnav" aria-label="System design sections">
-      <a href="#thesis">Thesis</a>
-      <a href="#data">Data</a>
-      <a href="#cards">Card selection</a>
-      <a href="#discover">Right Now</a>
-      <a href="#exit">Exit logic</a>
-      <a href="#why">Why it works</a>
-    </nav>
+    <section class="legend" aria-label="System design legend">
+      <article class="key">
+        <span class="swatch ai"></span>
+        <div>
+          <h4>Where AI does the lifting</h4>
+          <p>The part of each decision that cannot be a fixed rule because the right answer differs per person.</p>
+        </div>
+      </article>
+      <article class="key">
+        <span class="swatch ux"></span>
+        <div>
+          <h4>What it changes for the listener</h4>
+          <p>The payoff at the surface. Every piece of intelligence exists to make one felt moment land.</p>
+        </div>
+      </article>
+    </section>
 
     <main>
-      <section class="module" id="thesis">
-        <span class="tag">Module 01 - Thesis</span>
-        <h2>Where fixed rules break</h2>
-        <p>
-          A rule built to find a user's most-played songs will cluster around their historical average. The discovery
-          problem asks for something harder: three options that are meaningful, distinct, and safe enough to start a
-          session with. That requires divergence by design, not just similarity matching.
-        </p>
-        <p>
-          AI is useful because present-moment state is a pattern across weak signals: time, recency, replay intensity,
-          saves, skips, session context, and mood expression. No single signal is reliable alone.
-        </p>
-      </section>
-
-      <section class="module" id="data">
-        <span class="tag">Module 02 - Data</span>
-        <h2>What the system needs to know</h2>
-        <ul>
-          <li>Recent listening behavior versus long-term preference.</li>
-          <li>Emotional coordinates such as valence, energy, intensity, warmth, and novelty tolerance.</li>
-          <li>Attachment signals such as replay, return, save, skip, and session position.</li>
-          <li>Research signals from App Store reviews, Play Store reviews, Reddit threads, forums, and interviews.</li>
-        </ul>
-        <p>
-          In this prototype, those production signals are represented by synthetic listening data and deterministic
-          scoring. The MVP proves the interaction layer before integrating a live model and catalog service.
-        </p>
-      </section>
-
-      <section class="module" id="cards">
-        <span class="tag">Module 03 - Card selection</span>
-        <h2>How three mood cards get chosen</h2>
-        <ol>
-          <li>
-            <h4>Score engagement</h4>
-            <p>Recent tracks are scored from recency, replay, and save-like behavior. Engagement matters more than raw count.</p>
-          </li>
-          <li>
-            <h4>Classify into worlds</h4>
-            <p>Each track maps into one of fifteen emotional worlds using mood features and style tags.</p>
-          </li>
-          <li>
-            <h4>Weight the center card</h4>
-            <p>World history can boost the center card, but the boost is capped so one world cannot dominate every session.</p>
-          </li>
-          <li>
-            <h4>Pick distinct side cards</h4>
-            <p>Side cards are selected for distance from the center and from each other, so the triptych does not feel redundant.</p>
-          </li>
-          <li>
-            <h4>Anchor with memory</h4>
-            <p>The memory anchor uses known listening context. If the system has no basis for a memory, it should not invent one.</p>
-          </li>
-        </ol>
-      </section>
-
-      <section class="module" id="discover">
-        <span class="tag">Module 04 - Right Now For You</span>
-        <h2>Generating the discovery section</h2>
-        <p>
-          The selected card carries a mood world, valence, energy, and style profile into Home. The current MVP scores
-          local mock tracks against that profile and surfaces a compact "Right Now For You" section above regular Home
-          content.
-        </p>
-        <p>
-          In production, this becomes a live candidate generation and re-ranking service: existing Spotify candidates
-          are blended with current intent, novelty control, and evidence from similar emotional sessions.
-        </p>
-      </section>
-
-      <section class="module" id="exit">
-        <span class="tag">Module 05 - Exit logic</span>
-        <h2>What is persisted</h2>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Variable</th>
-                <th>Tracks</th>
-                <th>Resets when</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>consecutiveExits</code></td>
-                <td>Sessions exited from Mood Board without selecting a card.</td>
-                <td>Any card selection.</td>
-              </tr>
-              <tr>
-                <td><code>moodBoardPrefersTile</code></td>
-                <td>Whether Home shows the compact tile instead of the full intercept.</td>
-                <td>Any card selection or explicit reset.</td>
-              </tr>
-              <tr>
-                <td><code>moodBoardWorldHistory</code></td>
-                <td>Last ten selected world ids used to weight future center-card selection.</td>
-                <td>Oldest entry drops when the list exceeds ten.</td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="rail">
+        <div class="rail-row">
+          <span class="act">Act I - Reading who you are, right now</span>
+          <span class="rail-line"></span>
         </div>
-        <ol>
-          <li>Exiting without a card increments the counter.</li>
-          <li>At five consecutive exits, the compact Home tile is shown.</li>
-          <li>Tapping the tile reopens the full Mood Board.</li>
-          <li>Selecting any card resets the counter and returns the full experience to eligibility.</li>
-        </ol>
+        <p>Before a single card can appear, the system has to understand this person's present, not their all-time history.</p>
+      </div>
+
+      <section class="module">
+        <span class="tag">Signal engine</span>
+        <h2>Telling a song that mattered from a song that merely played</h2>
+        <p class="decision">Of everything played in the last two or three days, which moments actually meant something?</p>
+        <p>
+          The system watches a specific set of behaviors, all of which Spotify already captures, and treats each as a
+          clue about attachment. A single play is weak evidence. A song replayed in the same sitting, finished to the
+          end, saved the instant it landed, played at 2am, used to open or close a session, added to a playlist, never
+          once skipped, or returned to across several different days: those are strong evidence. Each recent song is
+          turned into a single "this mattered" reading, with fresh moments weighted heavier than older ones so this
+          morning always outranks three days ago.
+        </p>
+        <div class="chips">
+          <span class="chip">replay x3</span>
+          <span class="chip">finished x2</span>
+          <span class="chip">saved on the spot x5</span>
+          <span class="chip">late-night x2</span>
+          <span class="chip">opened a session x3</span>
+          <span class="chip">never skipped x3</span>
+          <span class="chip">came back across days +</span>
+        </div>
+        <div class="insight">
+          <span class="mini-label">Where AI does the lifting</span>
+          <p>
+            Those point values look objective, but a single scoresheet handed to everyone is wrong for most people. One
+            listener's real tell of attachment is the instant save; another's is coming back at 2am; another's is simply
+            never skipping. No amount of counting separates a song that mattered forty times from one that was
+            background noise forty times. <strong>Reading the combination of signals, and learning what that combination
+            means for this specific person, is the judgment a rule cannot make.</strong>
+          </p>
+        </div>
+        <div class="surface">
+          <span class="mini-label">What it changes for the listener</span>
+          <p>
+            Everything built on top of this feels observed rather than guessed, because it is keyed to what genuinely
+            moved them, not what they happened to leave running.
+          </p>
+        </div>
       </section>
 
-      <section class="module" id="why">
-        <span class="tag">Module 06 - Why this works</span>
-        <h2>The product bet</h2>
+      <section class="module">
+        <span class="tag">World selection</span>
+        <h2>Narrowing fifteen worlds down to three</h2>
+        <p class="decision">The library holds fifteen emotional worlds. Which three does this person see today?</p>
+        <div class="dial" aria-label="Each mood is a zone on two dials; the three cards are chosen to sit far apart on that map">
+          <svg width="340" height="252" viewBox="0 0 340 252" role="img">
+            <line x1="46" y1="206" x2="316" y2="206" stroke="rgba(255,255,255,0.22)" stroke-width="1" />
+            <line x1="46" y1="30" x2="46" y2="206" stroke="rgba(255,255,255,0.22)" stroke-width="1" />
+            <text x="181" y="231" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#777">calm to energetic</text>
+            <text x="30" y="118" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#777" transform="rotate(-90 30 118)">heavy to bright</text>
+            <circle cx="92" cy="86" r="5" fill="#6e7f90" />
+            <circle cx="130" cy="150" r="5" fill="#6e7f90" />
+            <circle cx="118" cy="52" r="5" fill="#6e7f90" />
+            <circle cx="176" cy="120" r="5" fill="#6e7f90" />
+            <circle cx="205" cy="176" r="5" fill="#6e7f90" />
+            <circle cx="150" cy="186" r="5" fill="#6e7f90" />
+            <circle cx="238" cy="70" r="5" fill="#6e7f90" />
+            <circle cx="270" cy="140" r="5" fill="#6e7f90" />
+            <circle cx="285" cy="60" r="5" fill="#6e7f90" />
+            <circle cx="210" cy="44" r="5" fill="#6e7f90" />
+            <circle cx="252" cy="192" r="5" fill="#6e7f90" />
+            <circle cx="98" cy="150" r="5" fill="#6e7f90" />
+            <line x1="92" y1="86" x2="285" y2="60" stroke="#1db954" stroke-width="1" stroke-dasharray="3 3" opacity="0.8" />
+            <line x1="285" y1="60" x2="205" y2="176" stroke="#1db954" stroke-width="1" stroke-dasharray="3 3" opacity="0.8" />
+            <line x1="205" y1="176" x2="92" y2="86" stroke="#1db954" stroke-width="1" stroke-dasharray="3 3" opacity="0.8" />
+            <circle cx="92" cy="86" r="7.5" fill="#1db954" />
+            <circle cx="285" cy="60" r="7.5" fill="#1db954" />
+            <circle cx="205" cy="176" r="7.5" fill="#1db954" />
+            <text x="92" y="72" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#58d682">P0</text>
+            <text x="285" y="46" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#58d682">P1</text>
+            <text x="205" y="196" text-anchor="middle" font-family="Inter, sans-serif" font-size="10" fill="#58d682">P2</text>
+          </svg>
+        </div>
         <p>
-          The goal is not more recommendations. It is fewer sessions that start from habit alone. Spotify already has
-          enough songs; the missing signal is what the user wants this session to feel like.
+          Every recent song, once scored, belongs to one of the fifteen worlds. Add up the "this mattered" readings
+          inside each world and a picture forms of where this person has been living emotionally these last few days:
+          the worlds carrying the most weight are the strongest candidates. But the three shown are deliberately not
+          just the top three. They are chosen to sit far apart on the map, so the person gets a real spread across their
+          emotional range rather than three versions of the same feeling.
         </p>
-        <ul>
-          <li><strong>Built to diverge:</strong> three cards should be meaningfully different, not three versions of the same mood.</li>
-          <li><strong>Weight the moment:</strong> a recent intentional replay can matter more than months of passive plays.</li>
-          <li><strong>Never block escape:</strong> users can skip the intervention, and repeated skips make it compact.</li>
-        </ul>
+        <div class="insight">
+          <span class="mini-label">Where AI does the lifting</span>
+          <p>
+            A recommender's natural pull is toward similarity. Left alone, it clusters the three options together,
+            because "close to what you like" is the only direction it knows how to move. <strong>Deliberately spreading
+            the three apart while keeping each one genuinely plausible for this person is the opposite instinct.</strong>
+          </p>
+        </div>
+        <div class="surface">
+          <span class="mini-label">What it changes for the listener</span>
+          <p>
+            The three cards never feel like the same suggestion three times over. There is always real distance between
+            them, which makes the choice feel like a choice, not a funnel.
+          </p>
+        </div>
+      </section>
+
+      <section class="module">
+        <span class="tag">Ordering</span>
+        <h2>Deciding which of the three leads</h2>
+        <p class="decision">Which world takes the center as the primary suggestion, and how are the other two placed?</p>
+        <p>
+          The strongest-weighted world takes the center: the P0 position, the system's most confident read of today.
+          The two others flank it. Which one sits left versus right is set by a stable coin flip tied to the date, not by
+          score, so no position hardens into "the safe pick" the person learns to default to. The center carries a
+          little memory: a world that has led before and been chosen is nudged forward, but capped, so one world can
+          never quietly take over every session.
+        </p>
+        <div class="insight">
+          <span class="mini-label">Where AI does the lifting</span>
+          <p>
+            The real call is knowing when a repeated choice is a genuine preference worth leaning into, versus a rut
+            worth breaking. <strong>Lean in too hard and you have rebuilt the same narrowing the feature is meant to
+            undo; ignore it and the card feels random.</strong>
+          </p>
+        </div>
+        <div class="surface">
+          <span class="mini-label">What it changes for the listener</span>
+          <p>
+            The center card is usually the one that feels most like today, so the very first glance lands. Because
+            nothing entrenches, the feature keeps widening the person's range instead of quietly shrinking it.
+          </p>
+        </div>
+      </section>
+
+      <div class="rail">
+        <div class="rail-row">
+          <span class="act">Act II - Building the card you see</span>
+          <span class="rail-line"></span>
+        </div>
+        <p>Each world becomes a card with three human layers: a memory, a line, and a sense of company.</p>
+      </div>
+
+      <section class="module">
+        <span class="tag">Anchor preview</span>
+        <h2>The songs previewed on the card</h2>
+        <p class="decision">Each card shows a small cluster of the person's own songs as its anchor. Which songs earn that place?</p>
+        <p>
+          The preview is drawn only from the person's own recent listening, narrowed to the songs that belong to that
+          card's world, ranked by the same "this mattered" reading, top two or three, with no two by the same artist so
+          the cluster reads as a real slice of a mood rather than one album on repeat. If a world was chosen for being
+          unfamiliar territory and has no genuine history behind it, the card shows no anchor at all rather than
+          inventing one.
+        </p>
+        <div class="insight">
+          <span class="mini-label">Where AI does the lifting</span>
+          <p>
+            This rides on the signal engine from Act I. The preview lands because it surfaces the songs you were
+            genuinely inside, identified by learning your specific tells, not the songs you merely played the most.
+          </p>
+        </div>
+        <div class="surface">
+          <span class="mini-label">What it changes for the listener</span>
+          <p>
+            The card feels like it was paying attention. Seeing the exact songs you leaned on this week next to a
+            feeling turns a pretty tile into a personal observation, and never a fabricated one.
+          </p>
+        </div>
+      </section>
+
+      <section class="module">
+        <span class="tag">The line</span>
+        <h2>Writing the phrase on the card</h2>
+        <p class="decision">Each card carries a short line of language: the phrase that names the feeling before the person can.</p>
+        <p>
+          In the prototype today, it is chosen from a small set of lines written per world and rotated so it never goes
+          stale and two people do not see the identical line on the same day. The design it is built toward generates
+          the line live: shaped by the world and by the exact song just chosen as the anchor, in the register of how this
+          person's own music actually sounds, with one unbreakable rule: never claim more feeling than the behavior
+          earned.
+        </p>
+        <div class="insight">
+          <span class="mini-label">Where AI does the lifting</span>
+          <p>
+            This is the one decision with no rule version at all. A rule can only pick a sentence a human already wrote;
+            it cannot write a new one. <strong>Generating language fitted to a specific person and a specific moment is
+            the purest demonstration of why this system is AI-shaped rather than rule-shaped.</strong>
+          </p>
+        </div>
+        <div class="surface">
+          <span class="mini-label">What it changes for the listener</span>
+          <p>The line sounds like it was written about this moment, not lifted from a menu.</p>
+        </div>
+      </section>
+
+      <section class="module">
+        <span class="tag">Community</span>
+        <h2>Who counts as "people who hear music like you"</h2>
+        <p class="decision">The card can show a live count of kindred listeners present right now. Who is that group?</p>
+        <p>
+          Two clocks run here. The group itself, the few thousand listeners whose taste genuinely overlaps with this
+          person, shifts slowly and is recomputed occasionally. The number on the card moves fast: every few minutes,
+          how many of that group are actually active in this same world right now, counting real listening rather than a
+          glance and a skip. If the count is too thin to feel real, the line simply does not appear.
+        </p>
+        <div class="insight">
+          <span class="mini-label">Where AI does the lifting</span>
+          <p>
+            Counting a known group is arithmetic. <strong>Finding the right group, the few thousand who truly sound like
+            you out of hundreds of millions, is pattern-matching at a scale no hand-written rule can express.</strong>
+          </p>
+        </div>
+        <div class="surface">
+          <span class="mini-label">What it changes for the listener</span>
+          <p>
+            It reframes a private, uncertain step as a shared one. "People exactly like me are here right now" is far
+            harder to fake than "this is popular."
+          </p>
+        </div>
+      </section>
+
+      <div class="rail">
+        <div class="rail-row">
+          <span class="act">Act III - After the tap, and knowing when to stop</span>
+          <span class="rail-line"></span>
+        </div>
+        <p>The tap opens a session built for the moment, and one decision is deliberately kept away from AI entirely.</p>
+      </div>
+
+      <section class="module">
+        <span class="tag">Eligibility</span>
+        <h2>What makes a song belong to a world</h2>
+        <p class="decision">When the card is tapped, the system fills a section with new music. Which songs are eligible?</p>
+        <p>
+          Every song sits somewhere on the two dials: roughly calm-to-energetic and heavy-to-bright. Each world is a
+          zone on that map. A song is eligible for a world if it lands inside that zone and the person has not heard it
+          before, because this section is for discovery, not replaying the familiar.
+        </p>
+        <div class="insight">
+          <span class="mini-label">Where AI does the lifting</span>
+          <p>
+            Drawing the zone boundaries is a rule. But placing a song on the dials in the first place, hearing the audio
+            and knowing it feels restless rather than settled, is a learned judgment Spotify's models already make.
+          </p>
+        </div>
+        <div class="surface">
+          <span class="mini-label">What it changes for the listener</span>
+          <p>The pool for each world genuinely feels like that world. The feeling the card promised is the feeling that plays.</p>
+        </div>
+      </section>
+
+      <section class="module">
+        <span class="tag">Ranking</span>
+        <h2>Which new songs actually get served</h2>
+        <p class="decision">From that eligible pool, which eight songs appear, and in what priority?</p>
+        <p>
+          Each candidate is weighed on how squarely it sits in the heart of the world, how well it fits the person's
+          broader taste, whether the kindred-listener group is responding to it right now, and a small bonus for
+          under-heard tracks the group is still into. The totals decide the top eight, capped at two per artist. One
+          floor is non-negotiable: a song must at least loosely fit the person's taste to appear at all.
+        </p>
+        <div class="insight">
+          <span class="mini-label">Where AI does the lifting</span>
+          <p>
+            A recommender that only optimizes for "matches what you like" always settles back into the familiar. Layering
+            "emotionally right for this exact moment" and "a small, validated step past the comfort zone" means balancing
+            goals that pull against each other.
+          </p>
+        </div>
+        <div class="surface">
+          <span class="mini-label">What it changes for the listener</span>
+          <p>The first new song feels chosen for them, not recommended at them: close enough to trust, far enough to be new.</p>
+        </div>
+      </section>
+
+      <section class="module">
+        <span class="tag">Restraint</span>
+        <h2>Knowing when to step back</h2>
+        <p class="decision">When someone keeps opening the app and walking straight past this, what should the system do?</p>
+        <p>
+          It withdraws, predictably. After enough consecutive opens with no engagement, the full-screen moment steps back
+          on its own to a quiet tile on the home screen. A single tap of interest brings it right back, and the person
+          can move between the two states as often as they like. Nothing is hidden, nothing is timed, nothing reads the
+          person to decide the most effective moment to reappear.
+        </p>
+        <div class="insight held">
+          <span class="mini-label">Where we deliberately kept AI out</span>
+          <p>
+            Everywhere else, AI does the deciding. Here we chose not to let it, on principle. <strong>A system that
+            learned exactly when to retreat and return could learn to time its retreat as a nudge, optimizing for
+            re-engagement against what the person actually wants.</strong> Withdrawal has to be a promise someone can
+            predict.
+          </p>
+        </div>
+        <div class="surface">
+          <span class="mini-label">What it changes for the listener</span>
+          <p>
+            The way out is always there, always free, and never gets cleverer at pulling them back. That predictability
+            is what makes the rest of the feature safe to trust.
+          </p>
+        </div>
+      </section>
+
+      <div class="rail">
+        <div class="rail-row">
+          <span class="act">What this adds up to</span>
+          <span class="rail-line"></span>
+        </div>
+      </div>
+
+      <section class="synthesis base">
+        <span class="mini-label">Why a conventional recommender could not do this</span>
+        <h3>Every decision turns on something true of one person, not the average.</h3>
+        <p>
+          What a signal is worth, which songs mattered, how far to reach, who genuinely sounds like you, what to say. A
+          traditional recommender runs one logic for everyone and optimizes for the historical mean. It is not
+          under-built: it is aimed at a problem whose answer <strong>refuses to be an average</strong>.
+        </p>
+      </section>
+
+      <section class="synthesis ai">
+        <span class="mini-label">What AI makes possible that was hard before</span>
+        <h3>Four moves, each a different kind of thing: none of them a faster rule.</h3>
+        <p>
+          Reading a messy pile of weak signals <strong>per person</strong>. Holding <strong>relevance and novelty at
+          once</strong>. Finding the <strong>right small crowd inside an enormous population</strong>, live. And
+          <strong>writing language that did not exist</strong> until the moment it was needed.
+        </p>
+      </section>
+
+      <section class="synthesis ux">
+        <span class="mini-label">How it changes the experience</span>
+        <h3>From recommending at an average user to responding to a specific person.</h3>
+        <p>
+          The entry moment feels like it knows what <strong>today</strong> is: observed, worded, and populated for this
+          person, backed by real company, and honest enough to step back when they are not interested.
+        </p>
+      </section>
+
+      <section class="closer">
+        <span class="mini-label">The one upgrade that makes the claim literal</span>
+        <h3>Route the card's line through a real model call.</h3>
+        <p>
+          The write-up is honest about what is a rule today and what is a model. The single highest-leverage change
+          before this is finished is the card's line: generate it live, conditioned on the world and the exact anchor
+          song, instead of drawing from a written set. It is the one place where "a rule cannot do this" is true with
+          zero qualification, and it is <strong>a single API call from being demonstrated rather than described</strong>.
+        </p>
       </section>
     </main>
 

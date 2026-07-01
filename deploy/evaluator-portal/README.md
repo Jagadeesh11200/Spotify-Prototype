@@ -47,8 +47,8 @@ BROWSERSTACK_SPEED
 Default BrowserStack launch configuration:
 
 ```text
-Device: Google Pixel 9
-OS: Android 15.0
+Device: OnePlus 11R
+OS: Android 13.0
 Display: scale_to_fit=true
 Speed: 1
 Start: true

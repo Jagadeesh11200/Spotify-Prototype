@@ -20,7 +20,7 @@ class InterPhaseRegressionTest {
         val viewModel = SpotifyViewModel()
         viewModel.initMoodCards(shuffle = false)
 
-        val originallyPlaying = viewModel.songs.value.first { it.id == "s3" }
+        val originallyPlaying = viewModel.songs.value.first { it.id == "h03" }
         viewModel.selectSong(originallyPlaying)
         assertEquals(originallyPlaying.id, viewModel.currentSong.value?.id)
         assertTrue(viewModel.isPlaying.value)
@@ -33,7 +33,7 @@ class InterPhaseRegressionTest {
         assertEquals(selectedMood.id, viewModel.selectedMood.value?.id)
         assertEquals(originallyPlaying.id, viewModel.currentSong.value?.id)
         assertFalse(viewModel.rightNowRecommendations.value.any { it.id.startsWith("p_ep") })
-        assertEquals(8, viewModel.rightNowRecommendations.value.size)
+        assertEquals(10, viewModel.rightNowRecommendations.value.size)
     }
 
     @Test
@@ -85,7 +85,7 @@ class InterPhaseRegressionTest {
         assertEquals(selectedMood.id, viewModel.selectedMood.value?.id)
         assertEquals("Home", viewModel.currentTab.value)
         assertEquals("Music", viewModel.homeFilter.value)
-        assertEquals(8, viewModel.rightNowRecommendations.value.size)
+        assertEquals(10, viewModel.rightNowRecommendations.value.size)
     }
 
     @Test
