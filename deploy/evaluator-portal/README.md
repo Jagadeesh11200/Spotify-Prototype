@@ -1,6 +1,6 @@
 # Evaluator Portal
 
-This folder is a static wrapper for the hosted Android emulator link. It is not a web version of the app.
+This folder is a static wrapper for the hosted Android session link. It is not a web version of the app.
 
 The stable portal includes:
 
@@ -13,12 +13,12 @@ system-design.html
 `evaluator-guide.html` gives evaluators a phase-by-phase test script. `system-design.html` explains how the AI-native
 review analysis and discovery backend maps to the MVP.
 
-The portal intentionally opens Appetize in a new tab instead of embedding it in an iframe. Appetize can refuse iframe
-loading on Vercel depending on app/share settings, so the reliable evaluator path is the `Open Mobile Session` button.
+The portal opens BrowserStack App Live in a new tab through the `Open Mobile Session` button.
 
 ## Local/manual setup
 
-For a manual deployment, update `app-config.js` with your Appetize URL and deploy this folder as a static site.
+For a manual deployment, update `app-config.js` with your BrowserStack App Live URL and deploy this folder as a static
+site.
 
 ## CI/CD setup
 
@@ -28,35 +28,31 @@ production deployment. In that mode, do not hand-edit `index.html` for every bui
 Required GitHub secrets:
 
 ```text
-APPETIZE_API_TOKEN
-APPETIZE_PUBLIC_KEY
+BROWSERSTACK_USERNAME
+BROWSERSTACK_ACCESS_KEY
 VERCEL_TOKEN
 VERCEL_ORG_ID
 VERCEL_PROJECT_ID
 ```
 
-Optional GitHub secret:
+Optional GitHub secrets:
 
 ```text
-APPETIZE_APP_URL
-APPETIZE_DEVICE
-APPETIZE_OS_VERSION
+BROWSERSTACK_APP_LIVE_URL
+BROWSERSTACK_DEVICE
+BROWSERSTACK_OS_VERSION
+BROWSERSTACK_SPEED
 ```
 
-Use `APPETIZE_APP_URL` only if the public Appetize link you want evaluators to open differs from the default:
+Default BrowserStack launch configuration:
 
 ```text
-https://appetize.io/app/{APPETIZE_PUBLIC_KEY}
+Device: Google Pixel 9
+OS: Android 15.0
+Display: scale_to_fit=true
+Speed: 1
+Start: true
 ```
 
-The default evaluator device is:
-
-```text
-Device: Pixel 9 Pro
-URL value: pixel9pro
-OS: Android 16.0
-URL value: 16.0
-Orientation: portrait
-```
-
-Set `APPETIZE_DEVICE` or `APPETIZE_OS_VERSION` only if you want to override this configuration.
+Set the optional BrowserStack secrets only if the selected device/OS is unavailable in your plan or you want to pin a
+specific App Live launch URL manually.

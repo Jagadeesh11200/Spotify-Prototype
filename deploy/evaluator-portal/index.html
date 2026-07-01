@@ -179,21 +179,21 @@
   <body>
     <header class="topbar">
       <a class="brand" href="./index.html">Spotify Mood MVP</a>
-      <a class="repo-link" href="https://github.com/Jagadeesh11200/Spotify-Prototype/" target="_blank" rel="noreferrer" data-repo-link>Project Repo</a>
+      <a class="repo-link" href="https://github.com/" target="_blank" rel="noreferrer" data-repo-link>Project Repo</a>
     </header>
 
     <main>
       <section>
         <h1>Spotify Mood MVP</h1>
         <p>
-          A native Android discovery prototype streamed in a browser for evaluation. The app stays mobile; the browser
-          only provides access to the hosted Android session.
+          A native Android discovery prototype opened through BrowserStack App Live for evaluation. The app stays
+          mobile; the browser only provides access to the hosted Android session.
         </p>
         <p>
           Start with the mobile session, then use the guide and system design pages to evaluate the full fellowship MVP.
         </p>
         <div class="actions">
-          <a class="button" href="#" target="_blank" rel="noreferrer" data-appetize-link>Open Mobile Session</a>
+          <a class="button" href="#" target="_blank" rel="noreferrer" data-mobile-session-link>Open Mobile Session</a>
           <a class="button secondary" href="./evaluator-guide.html" target="_blank" rel="noreferrer">Evaluator Guide</a>
           <a class="button secondary" href="./system-design.html" target="_blank" rel="noreferrer">System Design</a>
         </div>
@@ -202,24 +202,25 @@
       <section class="panel" aria-label="Evaluation instructions">
         <h2>What to do first</h2>
         <ul>
-          <li>Open Mobile Session launches the native Android MVP in Appetize.</li>
+          <li>Open Mobile Session launches the native Android MVP in BrowserStack App Live.</li>
           <li>Evaluator Guide gives a phase-by-phase test script.</li>
           <li>System Design explains the AI-native logic behind the product bet.</li>
         </ul>
         <div class="device">
-          <span><strong>Device:</strong> Pixel 9 Pro</span>
-          <span><strong>OS:</strong> Android 16.0</span>
+          <span><strong>Device:</strong> Google Pixel 9</span>
+          <span><strong>OS:</strong> Android 15.0</span>
           <span><strong>Orientation:</strong> Portrait</span>
+          <span><strong>Display:</strong> Scale to fit</span>
         </div>
       </section>
     </main>
 
     <script>
       const config = window.SPOTIFY_MOOD_MVP_CONFIG || {};
-      const appUrl = config.appetizeUrl || "https://appetize.io";
+      const appUrl = config.mobileSessionUrl || "https://app-live.browserstack.com/dashboard";
       const repoUrl = config.repositoryUrl || "https://github.com/";
 
-      document.querySelectorAll("[data-appetize-link]").forEach((link) => {
+      document.querySelectorAll("[data-mobile-session-link]").forEach((link) => {
         link.href = appUrl;
       });
 

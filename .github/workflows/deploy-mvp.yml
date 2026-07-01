@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-upload-deploy:
-    name: Build APK, upload to Appetize, deploy portal
+    name: Build APK, upload to BrowserStack, deploy portal
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -58,63 +58,78 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
 
-      - name: Upload APK to Appetize
+      - name: Upload APK to BrowserStack
         env:
-          APPETIZE_API_TOKEN: ${{ secrets.APPETIZE_API_TOKEN }}
-          APPETIZE_PUBLIC_KEY: ${{ secrets.APPETIZE_PUBLIC_KEY }}
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
         run: |
           set -euo pipefail
 
-          if [ -z "${APPETIZE_API_TOKEN}" ]; then
-            echo "::error::Missing APPETIZE_API_TOKEN GitHub secret."
+          if [ -z "${BROWSERSTACK_USERNAME}" ]; then
+            echo "::error::Missing BROWSERSTACK_USERNAME GitHub secret."
             exit 1
           fi
 
-          if [ -z "${APPETIZE_PUBLIC_KEY}" ]; then
-            echo "::error::Missing APPETIZE_PUBLIC_KEY GitHub secret. Create the Appetize app once, then save its public key as this secret."
+          if [ -z "${BROWSERSTACK_ACCESS_KEY}" ]; then
+            echo "::error::Missing BROWSERSTACK_ACCESS_KEY GitHub secret."
             exit 1
           fi
 
           APK_PATH="app/build/outputs/apk/debug/app-debug.apk"
 
           curl --fail-with-body --show-error --silent \
-            -X POST "https://api.appetize.io/v1/apps/${APPETIZE_PUBLIC_KEY}" \
-            -H "X-API-KEY: ${APPETIZE_API_TOKEN}" \
+            -u "${BROWSERSTACK_USERNAME}:${BROWSERSTACK_ACCESS_KEY}" \
+            -X POST "https://api-cloud.browserstack.com/app-live/upload" \
             -F "file=@${APK_PATH}" \
-            -F "platform=android" \
-            -F "note=GitHub Actions build ${GITHUB_SHA}" \
-            -o appetize-response.json
+            -o browserstack-upload-response.json
 
       - name: Generate evaluator portal config
         env:
-          APPETIZE_PUBLIC_KEY: ${{ secrets.APPETIZE_PUBLIC_KEY }}
-          APPETIZE_APP_URL: ${{ secrets.APPETIZE_APP_URL }}
-          APPETIZE_DEVICE: ${{ secrets.APPETIZE_DEVICE }}
-          APPETIZE_OS_VERSION: ${{ secrets.APPETIZE_OS_VERSION }}
+          BROWSERSTACK_APP_LIVE_URL: ${{ secrets.BROWSERSTACK_APP_LIVE_URL }}
+          BROWSERSTACK_DEVICE: ${{ secrets.BROWSERSTACK_DEVICE }}
+          BROWSERSTACK_OS_VERSION: ${{ secrets.BROWSERSTACK_OS_VERSION }}
+          BROWSERSTACK_SPEED: ${{ secrets.BROWSERSTACK_SPEED }}
         run: |
           node <<'NODE'
           const fs = require("fs");
 
-          const publicKey = process.env.APPETIZE_PUBLIC_KEY;
-          const explicitAppUrl = process.env.APPETIZE_APP_URL;
-          const device = process.env.APPETIZE_DEVICE || "pixel9pro";
-          const osVersion = process.env.APPETIZE_OS_VERSION || "16.0";
+          const explicitAppLiveUrl = process.env.BROWSERSTACK_APP_LIVE_URL;
+          const device = process.env.BROWSERSTACK_DEVICE || "Google Pixel 9";
+          const osVersion = process.env.BROWSERSTACK_OS_VERSION || "15.0";
+          const speed = process.env.BROWSERSTACK_SPEED || "1";
           const repositoryUrl = `https://github.com/${process.env.GITHUB_REPOSITORY}`;
+          const responsePath = "browserstack-upload-response.json";
 
-          function withDeviceConfig(rawUrl) {
-            const url = new URL(rawUrl);
-            url.searchParams.set("device", device);
-            url.searchParams.set("osVersion", osVersion);
-            url.searchParams.set("orientation", "portrait");
-            return url.toString();
+          let uploadResponse = {};
+          if (fs.existsSync(responsePath)) {
+            uploadResponse = JSON.parse(fs.readFileSync(responsePath, "utf8"));
           }
 
-          const appUrl = withDeviceConfig(explicitAppUrl || `https://appetize.io/app/${publicKey}`);
+          const appUrl = uploadResponse.app_url;
+          if (!explicitAppLiveUrl && !appUrl) {
+            throw new Error(`BrowserStack upload response did not contain app_url. Response: ${JSON.stringify(uploadResponse)}`);
+          }
+
+          const appHash = appUrl ? appUrl.replace(/^bs:\/\//, "") : "";
+          const params = new URLSearchParams({
+            os: "android",
+            os_version: osVersion,
+            device,
+            app_hashed_id: appHash,
+            scale_to_fit: "true",
+            speed,
+            start: "true"
+          });
+          const mobileSessionUrl = explicitAppLiveUrl || `https://app-live.browserstack.com/dashboard#${params.toString()}`;
 
           const config = {
-            appetizeUrl: appUrl,
-            appetizeDevice: device,
-            appetizeOsVersion: osVersion,
+            mobileSessionProvider: "browserstack",
+            mobileSessionUrl,
+            browserStackAppUrl: appUrl || null,
+            browserStackDevice: device,
+            browserStackOsVersion: osVersion,
+            browserStackScaleToFit: true,
+            browserStackSpeed: speed,
             repositoryUrl,
             buildSha: process.env.GITHUB_SHA,
             generatedAt: new Date().toISOString()

@@ -1,6 +1,9 @@
 window.SPOTIFY_MOOD_MVP_CONFIG = {
-  appetizeUrl: "https://appetize.io?device=pixel9pro&osVersion=16.0&orientation=portrait",
-  appetizeDevice: "pixel9pro",
-  appetizeOsVersion: "16.0",
+  mobileSessionProvider: "browserstack",
+  mobileSessionUrl: "https://app-live.browserstack.com/dashboard#os=android&os_version=15.0&device=Google+Pixel+9&scale_to_fit=true&speed=1&start=true",
+  browserStackDevice: "Google Pixel 9",
+  browserStackOsVersion: "15.0",
+  browserStackScaleToFit: true,
+  browserStackSpeed: "1",
   repositoryUrl: "https://github.com/"
 };

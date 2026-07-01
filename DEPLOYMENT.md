@@ -15,8 +15,8 @@ The evaluator opens a URL in their browser and interacts with the real Android a
 flowchart LR
   Repo["GitHub repo"] --> Build["Gradle build: ./gradlew assembleDebug"]
   Build --> Apk["app-debug.apk"]
-  Apk --> Appetize["Hosted Android emulator (Appetize)"]
-  Appetize --> PublicUrl["Public app session URL"]
+  Apk --> BrowserStack["BrowserStack App Live"]
+  BrowserStack --> PublicUrl["Hosted mobile session URL"]
   PublicUrl --> Portal["Optional Vercel or Render evaluator portal"]
   Portal --> Evaluator["Evaluator opens URL in browser"]
 ```
@@ -53,25 +53,25 @@ For this fellowship MVP, the debug APK is acceptable because the app uses mock/l
 through the Play Store. If you later need Play Store distribution, create a proper release keystore and run
 `assembleRelease`.
 
-## Primary Deployment Option: Appetize
+## Primary Deployment Option: BrowserStack App Live
 
-Use Appetize or a similar hosted Android emulator provider.
+Use BrowserStack App Live or a similar hosted Android device provider.
 
 High-level steps:
 
-1. Create an account on the hosted emulator service.
-2. Upload `app/build/outputs/apk/debug/app-debug.apk`.
-3. Select Android as the platform.
-4. Pick a phone-like device profile, for example Pixel-style portrait.
-5. Enable public sharing, or create a share link.
-6. Test the share link in an incognito/private browser window.
-7. Send that link to the evaluator.
+1. Create a BrowserStack account.
+2. Copy your BrowserStack username and access key.
+3. Add them as GitHub Actions secrets.
+4. Let GitHub Actions upload `app/build/outputs/apk/debug/app-debug.apk`.
+5. GitHub Actions generates a BrowserStack App Live launch URL.
+6. Vercel deploys the evaluator portal.
+7. Send the Vercel URL to the evaluator.
 
 Recommended session settings:
 
-- Orientation: portrait.
-- Device: modern phone profile.
-- OS: Android 13+ is fine; Android 15/16 is also fine.
+- Device: Google Pixel 9 by default.
+- OS: Android 15.0 by default.
+- Display: scale to fit.
 - Network: no special network required.
 - Launch package: `com.aistudio.spotify.gmpqlr`.
 - Main activity: `com.example.MainActivity`.
@@ -92,7 +92,8 @@ For manual deployment, edit:
 deploy/evaluator-portal/app-config.js
 ```
 
-and set the Appetize URL. For CI/CD, do not edit the generated config on every build; let GitHub Actions create it.
+and set the BrowserStack App Live URL. For CI/CD, do not edit the generated config on every build; let GitHub Actions
+create it.
 
 ## Continuous Deployment
 
@@ -110,8 +111,8 @@ flowchart LR
   Push["Push to main"] --> Actions["GitHub Actions"]
   Actions --> Tests["Run unit tests"]
   Tests --> Apk["Build app-debug.apk"]
-  Apk --> Appetize["Update existing Appetize app"]
-  Appetize --> Config["Generate app-config.js"]
+  Apk --> BrowserStack["Upload APK to BrowserStack"]
+  BrowserStack --> Config["Generate app-config.js"]
   Config --> Vercel["Deploy portal to Vercel"]
   Vercel --> Evaluator["Evaluator opens stable Vercel URL"]
 ```
@@ -119,8 +120,8 @@ flowchart LR
 One-time setup:
 
 1. Create the GitHub repository and push this code.
-2. Create one Appetize app manually by uploading the current debug APK.
-3. Copy that Appetize app public key.
+2. Create a BrowserStack account.
+3. Copy your BrowserStack username and access key.
 4. Create a Vercel project for `deploy/evaluator-portal`.
 5. Add the required GitHub repository secrets.
 6. Push to the `main` branch or run the workflow manually from GitHub Actions.
@@ -128,8 +129,8 @@ One-time setup:
 Required GitHub secrets:
 
 ```text
-APPETIZE_API_TOKEN
-APPETIZE_PUBLIC_KEY
+BROWSERSTACK_USERNAME
+BROWSERSTACK_ACCESS_KEY
 VERCEL_TOKEN
 VERCEL_ORG_ID
 VERCEL_PROJECT_ID
@@ -138,39 +139,36 @@ VERCEL_PROJECT_ID
 Optional GitHub secret:
 
 ```text
-APPETIZE_APP_URL
-APPETIZE_DEVICE
-APPETIZE_OS_VERSION
+BROWSERSTACK_APP_LIVE_URL
+BROWSERSTACK_DEVICE
+BROWSERSTACK_OS_VERSION
+BROWSERSTACK_SPEED
 ```
 
-Use `APPETIZE_APP_URL` only if your Appetize public evaluator URL differs from:
+Use `BROWSERSTACK_APP_LIVE_URL` only if you want to provide a manually prepared BrowserStack launch URL instead of the
+one generated from the uploaded APK.
 
-```text
-https://appetize.io/app/{APPETIZE_PUBLIC_KEY}
-```
-
-The current evaluator portal intentionally opens Appetize in a new tab because Appetize can refuse iframe loading on
-Vercel depending on app/share settings. This avoids showing a broken embedded emulator to evaluators.
+The current evaluator portal opens BrowserStack in a new tab. It does not embed a device iframe.
 
 The workflow also pins the evaluator device to match the intended mobile experience:
 
 ```text
-Device: Pixel 9 Pro
-URL value: pixel9pro
-OS: Android 16.0
-URL value: 16.0
-Orientation: portrait
+Device: Google Pixel 9
+OS: Android 15.0
+Display: scale_to_fit=true
+Speed: 1
 ```
 
-These values are appended to the Appetize open link. Override them only if needed with:
+Override them only if needed with:
 
 ```text
-APPETIZE_DEVICE
-APPETIZE_OS_VERSION
+BROWSERSTACK_DEVICE
+BROWSERSTACK_OS_VERSION
+BROWSERSTACK_SPEED
 ```
 
-Important: the workflow updates an existing Appetize app instead of creating a new app each time. That keeps the
-mobile-session URL stable while the APK behind it changes.
+Important: the workflow uploads the latest APK to BrowserStack on every push and then deploys the Vercel portal with
+the latest BrowserStack launch URL.
 
 ## Manual Vercel Static Deployment
 
@@ -220,10 +218,10 @@ match the "no APK download" requirement as well as hosted emulator streaming.
 Good for tester management, but the evaluator still installs the APK on a phone. Use this only if the evaluator agrees
 to install an app.
 
-### BrowserStack App Live
+### Appetize
 
-Good for manual QA on many real devices. Depending on your plan, sharing a public evaluator link may be less direct than
-Appetize-style public embedding.
+Good for public emulator-style demos, but quota/rate limits may affect the evaluator experience. Keep it as a backup
+only if BrowserStack is unavailable.
 
 ## Pre-Evaluation Checklist
 
